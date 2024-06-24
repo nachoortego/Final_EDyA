@@ -16,59 +16,70 @@ typedef struct {
   int N;
   Punto a;
   Punto b;
-}_Mapa;
+} _Mapa;
 
 typedef _Mapa* Mapa;
 
-Mapa leer_archivo (char filename[]) {
-  FILE* archivo;
-  archivo = fopen(filename, "r");
+Mapa leer_archivo(char filename[]) {
+  FILE* archivo = fopen(filename, "r");
   if (archivo == NULL) {
-    return NULL;  // Archivo no encontrado
+    return NULL; // Archivo no encontrado
   }
 
-
   Mapa mapa = malloc(sizeof(_Mapa));
-
   fscanf(archivo, "%d%d", &mapa->N, &mapa->M);
   fscanf(archivo, "%d%d", &mapa->a.x, &mapa->a.y);
   fscanf(archivo, "%d%d", &mapa->b.x, &mapa->b.y);
 
-  mapa->mat = malloc(sizeof(char*)*mapa->N);
-  for (int i = 0; i < mapa->M; i++)
-    mapa->mat[i] = malloc(sizeof(char)*mapa->N);
+  // Inicializar matriz
+  mapa->mat = malloc(sizeof(char*) * mapa->N);
+  for (int i = 0; i < mapa->N; i++) {
+    mapa->mat[i] = malloc(sizeof(char) * (mapa->M + 1)); // +1 para el '\0'
+  }
 
+  // Leer líneas del archivo
   char line[LINE_SIZE];
-  for (int i = 0; fgets(line, LINE_SIZE, archivo) != NULL; i++){
-    strcpy(mapa->mat[i], line);
+  fgets(line, LINE_SIZE, archivo); // Omitir la línea en blanco
+  for (int i = 0; i < mapa->N; i++) {
+      fgets(line, LINE_SIZE, archivo);
+      strncpy(mapa->mat[i], line, mapa->M);
+      mapa->mat[i][mapa->M] = '\0'; // Asegurar la terminación de la cadena
   }
 
   fclose(archivo);
-
   return mapa;
 }
 
 void imprimir_mapa(Mapa mapa) {
-  for (int i = 0; i < mapa->M; i++){
-    for (int j = 0; j < mapa->N; j++)
-      printf("%c ",mapa->mat[i][j]);
+  for (int i = 0; i < mapa->N; i++) {
+    for (int j = 0; j < mapa->M; j++)
+      printf("%c ", mapa->mat[i][j]);
     printf("\n");
   }
 }
 
+void liberar_mapa(Mapa mapa) {
+  for (int i = 0; i < mapa->N; i++) {
+    free(mapa->mat[i]);
+  }
+  free(mapa->mat);
+  free(mapa);
+}
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     printf("Uso: %s <archivo>\n", argv[0]);
     exit(1);
   }
+
   Mapa mapa = leer_archivo(argv[1]);
-  if(!mapa){
+  if (!mapa) {
     printf("Archivo no encontrado\n");
     exit(2);
   }
 
   imprimir_mapa(mapa);
+  liberar_mapa(mapa);
 
   return 0;
 }
