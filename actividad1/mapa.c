@@ -13,20 +13,20 @@ Mapa mapa_crear(char filename[]) {
 
   Mapa mapa = malloc(sizeof(_Mapa));
 
-  // Leo las dimensiones y los puntos a y b
-  if (fscanf(archivo, "%d%d", &mapa->N, &mapa->M) != 2 || mapa->N <= 0 || mapa->M <= 0) { // Verifico lectura y datos positivos
+  // Leer dimensiones y puntos a y b (primero y, luego x) , tambien verificar lectura y validez de los datos
+  if (fscanf(archivo, "%d%d", &mapa->N, &mapa->M) != 2 || mapa->N <= 0 || mapa->M <= 0) {
     free(mapa);
     fclose(archivo);
     return NULL;
   }
-  if (fscanf(archivo, "%d%d", &mapa->robot.x, &mapa->robot.y) != 2 ||
-      mapa->robot.x < 0 || mapa->robot.x >= mapa->N || mapa->robot.y < 0 || mapa->robot.y >= mapa->M) { // Verifico lectura y validez de los datos
+  if (fscanf(archivo, "%d%d", &mapa->robot.y, &mapa->robot.x) != 2 ||
+      mapa->robot.x < 0 || mapa->robot.x >= mapa->M || mapa->robot.y < 0 || mapa->robot.y >= mapa->N) {
     free(mapa);
     fclose(archivo);
     return NULL;
   }
-  if (fscanf(archivo, "%d%d", &mapa->final.x, &mapa->final.y) != 2 ||
-    mapa->final.x < 0 || mapa->final.x >= mapa->N || mapa->final.y < 0 || mapa->final.y >= mapa->M) { // Verifico lectura y validez de los datos
+  if (fscanf(archivo, "%d%d", &mapa->final.y, &mapa->final.x) != 2 ||
+      mapa->final.x < 0 || mapa->final.x >= mapa->M || mapa->final.y < 0 || mapa->final.y >= mapa->N) {
     free(mapa);
     fclose(archivo);
     return NULL;   
@@ -34,7 +34,7 @@ Mapa mapa_crear(char filename[]) {
 
   // Leer linea en blanco
   char line[LINE_SIZE];
-  if (fgets(line, LINE_SIZE, archivo) == NULL) { // Verifico que haya linea en blanco
+  if (fgets(line, LINE_SIZE, archivo) == NULL) {
     free(mapa);
     fclose(archivo);
     return NULL;
@@ -48,28 +48,29 @@ Mapa mapa_crear(char filename[]) {
 
   // Verificar dimensiones del mapa y caracteres del mapa
   for (int i = 0; i < mapa->N; i++) {
-    if (fgets(line, LINE_SIZE, archivo) == NULL || strlen(line) < mapa->M)  { // Verifico dimension del mapa
+    if (fgets(line, LINE_SIZE, archivo) == NULL || strlen(line) < mapa->M) {
       destruir_mapa(mapa);
       fclose(archivo);
       return NULL; 
     }
 
-    for(int j = 0; j < mapa->M; j++)
-      if(line[j] != '#' && line[j] != '.') { // Verifico que el mapa tenga caracteres validos
+    for (int j = 0; j < mapa->M; j++)
+      if (line[j] != '#' && line[j] != '.') {
         destruir_mapa(mapa);
         fclose(archivo);
         return NULL;
       }
 
-    strncpy(mapa->mat[i], line, mapa->M); // Copio los datos
+    strncpy(mapa->mat[i], line, mapa->M); // Copiar los datos
     mapa->mat[i][mapa->M] = '\0'; // Asegurar la terminación de la cadena
   }
-  mapa->mat[mapa->robot.x][mapa->robot.y] = 'R'; // Escribo el robot en la matriz
-  mapa->mat[mapa->final.x][mapa->final.y] = 'F'; // Escribo el final en la matriz
+  mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Escribir el robot en la matriz
+  mapa->mat[mapa->final.y][mapa->final.x] = 'F'; // Escribir el final en la matriz
 
   fclose(archivo);
   return mapa;
 }
+
 
 void imprimir_mapa(Mapa mapa) {
   printf("\033[0;31m"); // rojo
@@ -89,4 +90,40 @@ void destruir_mapa(Mapa mapa) {
   }
   free(mapa->mat);
   free(mapa);
+}
+
+void moveRight(Mapa mapa) {
+  if ((mapa->robot.x + 1) < mapa->M && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#') {
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '.';
+    mapa->robot.x++;
+    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+    printf("R");
+  }
+}
+
+void moveLeft(Mapa mapa) {
+  if ((mapa->robot.x - 1) >= 0 && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#') {
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '.';
+    mapa->robot.x--;
+    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+    printf("L");
+  }
+}
+
+void moveUp(Mapa mapa) {
+  if ((mapa->robot.y - 1) >= 0 && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#') {
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '.';
+    mapa->robot.y--;
+    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+    printf("U");
+  }
+}
+
+void moveDown(Mapa mapa) {
+  if ((mapa->robot.y + 1) < mapa->N && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#') {
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '.';
+    mapa->robot.y++;
+    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+    printf("D");
+  }
 }

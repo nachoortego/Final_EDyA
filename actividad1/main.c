@@ -16,14 +16,36 @@ int main(int argc, char *argv[]) {
     exit(2);
   }
 
-  // imprimir_mapa(mapa);
-  // moveRight(mapa);
-  // imprimir_mapa(mapa);
-  // moveLeft(mapa);
-  // imprimir_mapa(mapa);
-  // moveLeft(mapa);
-  // imprimir_mapa(mapa);
-  // destruir_mapa(mapa);
+  // Probar movimientos del robot
+  imprimir_mapa(mapa);
+  moveDown(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+  moveDown(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+  moveRight(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+  moveDown(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+  moveUp(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+  moveLeft(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+  moveLeft(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+  moveRight(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+  moveRight(mapa);
+  getchar();
+  imprimir_mapa(mapa);
+
 
   return 0;
 }
