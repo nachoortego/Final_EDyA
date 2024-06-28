@@ -19,14 +19,14 @@ Mapa mapa_crear(char filename[]) {
     fclose(archivo);
     return NULL;
   }
-  if (fscanf(archivo, "%d%d", &mapa->a.x, &mapa->a.y) != 2 ||
-      mapa->a.x < 0 || mapa->a.x >= mapa->N || mapa->a.y < 0 || mapa->a.y >= mapa->M) { // Verifico lectura y validez de los datos
+  if (fscanf(archivo, "%d%d", &mapa->robot.x, &mapa->robot.y) != 2 ||
+      mapa->robot.x < 0 || mapa->robot.x >= mapa->N || mapa->robot.y < 0 || mapa->robot.y >= mapa->M) { // Verifico lectura y validez de los datos
     free(mapa);
     fclose(archivo);
     return NULL;
   }
-  if (fscanf(archivo, "%d%d", &mapa->b.x, &mapa->b.y) != 2 ||
-    mapa->b.x < 0 || mapa->b.x >= mapa->N || mapa->b.y < 0 || mapa->b.y >= mapa->M) { // Verifico lectura y validez de los datos
+  if (fscanf(archivo, "%d%d", &mapa->final.x, &mapa->final.y) != 2 ||
+    mapa->final.x < 0 || mapa->final.x >= mapa->N || mapa->final.y < 0 || mapa->final.y >= mapa->M) { // Verifico lectura y validez de los datos
     free(mapa);
     fclose(archivo);
     return NULL;   
@@ -64,6 +64,8 @@ Mapa mapa_crear(char filename[]) {
     strncpy(mapa->mat[i], line, mapa->M); // Copio los datos
     mapa->mat[i][mapa->M] = '\0'; // Asegurar la terminación de la cadena
   }
+  mapa->mat[mapa->robot.x][mapa->robot.y] = 'R'; // Escribo el robot en la matriz
+  mapa->mat[mapa->final.x][mapa->final.y] = 'F'; // Escribo el final en la matriz
 
   fclose(archivo);
   return mapa;
@@ -78,6 +80,7 @@ void imprimir_mapa(Mapa mapa) {
     }
     printf("\n");
   }
+  printf("\n");
 }
 
 void destruir_mapa(Mapa mapa) {

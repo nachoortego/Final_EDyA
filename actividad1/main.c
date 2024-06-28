@@ -16,8 +16,14 @@ int main(int argc, char *argv[]) {
     exit(2);
   }
 
-  imprimir_mapa(mapa);
-  destruir_mapa(mapa);
+  // imprimir_mapa(mapa);
+  // moveRight(mapa);
+  // imprimir_mapa(mapa);
+  // moveLeft(mapa);
+  // imprimir_mapa(mapa);
+  // moveLeft(mapa);
+  // imprimir_mapa(mapa);
+  // destruir_mapa(mapa);
 
   return 0;
 }

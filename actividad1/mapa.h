@@ -16,15 +16,15 @@ typedef struct {
  * Tiene una matriz bidimensional que representa el mapa en si
  * Un valor entero N para las filas
  * Un valor entero M para las columnas
- * Un Punto 'a' para representar el punto de partida
- * Un Punto 'b' para representar el punto de llegada
+ * Un Punto 'robot' para representar el robot en el mapa
+ * Un Punto 'final' para representar el punto de llegada
  */
 typedef struct {
   char** mat;
   int N;
   int M;
-  Punto a;
-  Punto b;
+  Punto robot;
+  Punto final;
 } _Mapa;
 
 typedef _Mapa* Mapa;
@@ -43,5 +43,25 @@ void imprimir_mapa(Mapa);
  * Destruye el mapa y sus datos.
  */
 void destruir_mapa(Mapa);
+
+/**
+ * Mueve el robot hacia la derecha si es posible
+ */
+void moveRight(Mapa);
+
+/**
+ * Mueve el robot hacia la izquierda si es posible
+ */
+void moveLeft(Mapa);
+
+/**
+ * Mueve el robot hacia arriba si es posible
+ */
+void moveUp(Mapa);
+
+/**
+ * Mueve el robot hacia abajo si es posible
+ */
+void moveDown(Mapa);
 
 #endif /* __MAPA_H__ */
