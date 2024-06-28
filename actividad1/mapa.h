@@ -45,23 +45,27 @@ void imprimir_mapa(Mapa);
 void destruir_mapa(Mapa);
 
 /**
- * Mueve el robot hacia la derecha si es posible
+ * Mueve el robot hacia la derecha si es posible e imprime "R"
+ * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
-void moveRight(Mapa);
+int moveRight(Mapa);
 
 /**
- * Mueve el robot hacia la izquierda si es posible
+ * Mueve el robot hacia la izquierda si es posible e imprime "L"
+ * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
-void moveLeft(Mapa);
+int moveLeft(Mapa);
 
 /**
- * Mueve el robot hacia arriba si es posible
+ * Mueve el robot hacia arriba si es posible e imprime "U"
+ * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
-void moveUp(Mapa);
+int moveUp(Mapa);
 
 /**
- * Mueve el robot hacia abajo si es posible
+ * Mueve el robot hacia abajo si es posible e imprime "D"
+ * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
-void moveDown(Mapa);
+int moveDown(Mapa);
 
 #endif /* __MAPA_H__ */

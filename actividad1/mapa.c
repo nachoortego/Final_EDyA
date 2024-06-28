@@ -82,6 +82,7 @@ void imprimir_mapa(Mapa mapa) {
     printf("\n");
   }
   printf("\n");
+  getchar();
 }
 
 void destruir_mapa(Mapa mapa) {
@@ -92,38 +93,46 @@ void destruir_mapa(Mapa mapa) {
   free(mapa);
 }
 
-void moveRight(Mapa mapa) {
+int moveRight(Mapa mapa) {
   if ((mapa->robot.x + 1) < mapa->M && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#') {
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '.';
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
     mapa->robot.x++;
     mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-    printf("R");
+    printf("R\n");
+    return 1;
   }
+  return 0;
 }
 
-void moveLeft(Mapa mapa) {
+int moveLeft(Mapa mapa) {
   if ((mapa->robot.x - 1) >= 0 && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#') {
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '.';
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
     mapa->robot.x--;
     mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-    printf("L");
+    printf("L\n");
+    return 1;
   }
+  return 0;
 }
 
-void moveUp(Mapa mapa) {
+int moveUp(Mapa mapa) {
   if ((mapa->robot.y - 1) >= 0 && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#') {
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '.';
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
     mapa->robot.y--;
     mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-    printf("U");
+    printf("U\n");
+    return 1;
   }
+  return 0;
 }
 
-void moveDown(Mapa mapa) {
+int moveDown(Mapa mapa) {
   if ((mapa->robot.y + 1) < mapa->N && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#') {
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '.';
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
     mapa->robot.y++;
     mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-    printf("D");
+    printf("D\n");
+    return 1;
   }
+  return 0;
 }
