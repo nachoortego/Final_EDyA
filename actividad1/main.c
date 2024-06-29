@@ -23,7 +23,9 @@ static void imprimir_direccion(void *dato) {
   }
 }
 
-void camino_corto(Mapa mapa) { // Se acerca lo más posible al objetivo hasta chocarse un obstaculo
+static void no_destruir(void* dir) {}
+
+static void camino_corto(Mapa mapa) { // Se acerca lo más posible al objetivo hasta chocarse un obstaculo
   int moved = 1;
   while (moved) {
     moved = 0;
@@ -46,14 +48,24 @@ void camino_corto(Mapa mapa) { // Se acerca lo más posible al objetivo hasta ch
   }
 }
 
+static int check_estado(Mapa mapa) {
+  return mapa->robot.x == mapa->final.x && mapa->robot.y == mapa->final.y;
+}
+
 void encontrar_camino(Mapa mapa) {
-  if(mapa->robot.x == mapa->final.x && mapa->robot.y == mapa->final.y)
+  if(check_estado(mapa))
     printf("Completado!\n");
-  // while(mapa->robot.x != mapa->final.x || mapa->robot.y != mapa->final.y) {
-  //   camino_corto(mapa);
-  //   pila_imprimir(mapa->camino, imprimir_direccion);
-  // }
-  camino_corto(mapa);
+  while(!check_estado(mapa)) {
+    camino_corto(mapa);
+    if(!check_estado(mapa)) {
+      Direccion retroceder = reverse((Direccion)(intptr_t)pila_tope(mapa->camino));
+      move(mapa, retroceder, 0);
+      imprimir_mapa(mapa);
+      mapa->camino = pila_desapilar(mapa->camino, no_destruir);
+      camino_corto(mapa);
+      getchar();
+    }
+  }
   pila_imprimir(mapa->camino, imprimir_direccion);
   printf("Completado!\n");
 }
