@@ -22,17 +22,18 @@ void* pila_tope(Pila pila) {
   return pila->data;
 }
 
-void pila_apilar(Pila pila, void* dato, FuncionCopia copy) {
-  pila = glist_agregar_inicio(pila, dato, copy);
+Pila pila_apilar(Pila pila, void* dato, FuncionCopia copy) {
+  return glist_agregar_inicio(pila, dato, copy);
 }
 
-void pila_desapilar(Pila pila, FuncionDestructora destroy) {
+Pila pila_desapilar(Pila pila, FuncionDestructora destroy) {
   if (!pila_es_vacia(pila)) {
     GNode* aux = pila->next;
     destroy(pila->data);
     free(pila);
     pila = aux;
   }
+  return pila;
 }
 
 void pila_imprimir(Pila pila, FuncionVisitante visit) {

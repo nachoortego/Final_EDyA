@@ -94,6 +94,11 @@ void destruir_mapa(Mapa mapa) {
 }
 
 
+static void* no_copiar(void* dato) {
+  return dato; // Devuelve el mismo dato sin realizar una copia
+}
+
+
 int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
   switch (dir) {
     case LEFT:
@@ -103,6 +108,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
         mapa->robot.x--;
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+        mapa->camino = pila_apilar(mapa->camino, (void*)LEFT, no_copiar);
         printf("L\n");
         return 1;
       }
@@ -115,6 +121,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
         mapa->robot.x++;
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+        mapa->camino = pila_apilar(mapa->camino, (void*)RIGHT, no_copiar);
         printf("R\n");
         return 1;
       }
@@ -127,6 +134,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
         mapa->robot.y--;
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+        mapa->camino = pila_apilar(mapa->camino, (void*)UP, no_copiar);
         printf("U\n");
         return 1;
       }
@@ -139,10 +147,26 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
         mapa->robot.y++;
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+        mapa->camino = pila_apilar(mapa->camino, (void*)DOWN, no_copiar);
         printf("D\n");
         return 1;
       }
       break;
   }
   return 0;
+}
+
+Direccion reverse(Direccion dir) {
+  switch (dir) {
+  case LEFT:
+    return RIGHT;
+  case RIGHT:
+    return LEFT;
+  case UP:
+    return DOWN;
+  case DOWN:
+    return UP;
+  default:
+    return dir; // Devuelve por defecto, este caso no ocurre si dir esta bien definido
+  }
 }

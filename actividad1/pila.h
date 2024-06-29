@@ -28,12 +28,12 @@ void* pila_tope(Pila pila);
 /**
  * Apila un nuevo elemento en la pila
 */
-void pila_apilar(Pila pila, void* dato, FuncionCopia copy);
+Pila pila_apilar(Pila pila, void* dato, FuncionCopia copy);
 
 /**
  * Desapila el elemento en el tope de la pila
 */
-void pila_desapilar(Pila pila, FuncionDestructora destroy);
+Pila pila_desapilar(Pila pila, FuncionDestructora destroy);
 
 /**
  * Imprime los elementos de la pila

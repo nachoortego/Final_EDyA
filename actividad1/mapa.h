@@ -1,6 +1,8 @@
 #ifndef __MAPA_H__
 #define __MAPA_H__
 
+#include "pila.h"
+
 /**
  * Estructura de Punto para representar coordenadas
  * Tiene un valor entero x
@@ -22,11 +24,12 @@ typedef enum {
 
 /**
  * Estructura de Mapa para representar el entorno
- * Tiene una matriz bidimensional que representa el mapa en si
+ * Tiene una matriz bidimensional que representa el mapa
  * Un valor entero N para las filas
  * Un valor entero M para las columnas
  * Un Punto 'robot' para representar el robot en el mapa
  * Un Punto 'final' para representar el punto de llegada
+ * Una Pila 'camino' que guarda los movimientos del robot y se utiliza para backtracking
  */
 typedef struct {
   char** mat;
@@ -34,6 +37,7 @@ typedef struct {
   int M;
   Punto robot;
   Punto final;
+  Pila camino;
 } _Mapa;
 
 typedef _Mapa* Mapa;
@@ -59,5 +63,10 @@ void destruir_mapa(Mapa);
  * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
 int move(Mapa, Direccion, int);
+
+/**
+ * Toma una direccion y devuelve su contraria para backtracking
+ */
+Direccion reverse(Direccion);
 
 #endif /* __MAPA_H__ */
