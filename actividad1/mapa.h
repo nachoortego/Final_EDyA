@@ -43,9 +43,11 @@ typedef struct {
 typedef _Mapa* Mapa;
 
 /**
- * Devuelve un mapa con el archivo de entrada. Devuelve NULL si el archivo no existe o no es válido.
+ * Toma como argumento el nombre de un archivo.
+ * Devuelve un mapa con la informacion del archivo.
+ * Devuelve NULL si el archivo no existe o no es válido.
  */
-Mapa mapa_crear(char[]);
+Mapa mapa_crear(char filename[]);
 
 /**
  * Imprime el mapa por la salida estándar.
@@ -59,13 +61,15 @@ void destruir_mapa(Mapa);
 
 /**
  * Mueve el robot hacia la direccion indicada si es posible e imprime su caracter correspondiente
- * El tercer parámetro es ignorarRepetidos. En caso de que sea 1, se ignoran las casillas visitadas, sino se toman como validas
+ * El tercer parámetro es ignorarRepetidos. 
+ * En caso de que ignorarRepetidos sea 1, las casillas validas se consideran obstaculos.
+ * En caso de quue ignorarRepetidos sea 0, las casillas visitadas se consideran validas.
  * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
 int move(Mapa, Direccion, int);
 
 /**
- * Toma una direccion y devuelve su contraria para backtracking
+ * Toma una direccion y devuelve su opuesta, utilizado para backtracking
  */
 Direccion reverse(Direccion);
 

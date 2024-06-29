@@ -6,12 +6,18 @@
 
 #define LINE_SIZE 255
 
+/**
+ * Toma como argumento el nombre de un archivo.
+ * Devuelve un mapa con la informacion del archivo.
+ * Devuelve NULL si el archivo no existe o no es válido.
+ */
 Mapa mapa_crear(char filename[]) {
   FILE* archivo = fopen(filename, "r");
   if (archivo == NULL) 
     return NULL; // Archivo no encontrado
 
   Mapa mapa = malloc(sizeof(_Mapa));
+  assert(mapa != NULL);
 
   // Leer dimensiones y puntos a y b (primero y, luego x) , tambien verificar lectura y validez de los datos
   if (fscanf(archivo, "%d%d", &mapa->N, &mapa->M) != 2 || mapa->N <= 0 || mapa->M <= 0) {
@@ -42,8 +48,10 @@ Mapa mapa_crear(char filename[]) {
 
   // Inicializar matriz
   mapa->mat = malloc(sizeof(char*) * mapa->N);
+  assert(mapa->mat != NULL);
   for (int i = 0; i < mapa->N; i++) {
     mapa->mat[i] = malloc(sizeof(char) * (mapa->M + 1)); // +1 para el '\0'
+    assert(mapa->mat[i] != NULL);
   }
 
   // Verificar dimensiones del mapa y caracteres del mapa
@@ -71,7 +79,9 @@ Mapa mapa_crear(char filename[]) {
   return mapa;
 }
 
-
+/**
+ * Imprime el mapa por la salida estándar.
+ */
 void imprimir_mapa(Mapa mapa) {
   printf("\033[0;31m"); // rojo
   for (int i = 0; i < mapa->N; i++) {
@@ -81,10 +91,13 @@ void imprimir_mapa(Mapa mapa) {
     }
     printf("\n");
   }
-  printf("\n");
+  printf("\033[0;37m\n");
   getchar();
 }
 
+/**
+ * Destruye el mapa y sus datos.
+ */
 void destruir_mapa(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) { // Libera cada fila
     free(mapa->mat[i]);
@@ -93,22 +106,32 @@ void destruir_mapa(Mapa mapa) {
   free(mapa);
 }
 
-
+/**
+ * Funcion local que toma pila_apilar como argumento. 
+ * No devuelve una copia fisica.
+ */
 static void* no_copiar(void* dato) {
   return dato; // Devuelve el mismo dato sin realizar una copia
 }
 
-
+/**
+ * Mueve el robot hacia la direccion indicada si es posible e imprime su caracter correspondiente.
+ * Cada movimiento es agregado a la pila del mapa.
+ * El tercer parámetro es ignorarRepetidos. 
+ * En caso de que ignorarRepetidos sea 1, las casillas validas se consideran obstaculos.
+ * En caso de quue ignorarRepetidos sea 0, las casillas visitadas se consideran validas.
+ * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
+ */
 int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
   switch (dir) {
     case LEFT:
       if ((mapa->robot.x - 1) >= 0 &&
-          mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#' &&
+          mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
-        mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
-        mapa->robot.x--;
-        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-        mapa->camino = pila_apilar(mapa->camino, (void*)LEFT, no_copiar);
+        mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
+        mapa->robot.x--; 
+        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
+        mapa->camino = pila_apilar(mapa->camino, (void*)LEFT, no_copiar); // Apila el movimiento realizado
         printf("L\n");
         return 1;
       }
@@ -116,12 +139,12 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
 
     case RIGHT:
       if ((mapa->robot.x + 1) < mapa->M &&
-          mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#' &&
+          mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
-        mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
-        mapa->robot.x++;
-        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-        mapa->camino = pila_apilar(mapa->camino, (void*)RIGHT, no_copiar);
+        mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
+        mapa->robot.x++; 
+        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
+        mapa->camino = pila_apilar(mapa->camino, (void*)RIGHT, no_copiar ); // Apila el movimiento realizado
         printf("R\n");
         return 1;
       }
@@ -129,12 +152,12 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
 
     case UP:
       if ((mapa->robot.y - 1) >= 0 &&
-          mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#' &&
+          mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
-        mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
-        mapa->robot.y--;
-        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-        mapa->camino = pila_apilar(mapa->camino, (void*)UP, no_copiar);
+        mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
+        mapa->robot.y--; 
+        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
+        mapa->camino = pila_apilar(mapa->camino, (void*)UP, no_copiar); // Apila el movimiento realizado
         printf("U\n");
         return 1;
       }
@@ -142,20 +165,23 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
 
     case DOWN:
       if ((mapa->robot.y + 1) < mapa->N &&
-          mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#' &&
+          mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
-        mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
-        mapa->robot.y++;
-        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-        mapa->camino = pila_apilar(mapa->camino, (void*)DOWN, no_copiar);
+        mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
+        mapa->robot.y++; 
+        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
+        mapa->camino = pila_apilar(mapa->camino, (void*)DOWN, no_copiar); // Apila el movimiento realizado
         printf("D\n");
         return 1;
       }
       break;
   }
-  return 0;
+  return 0; // En caso de no haberse movido
 }
 
+/**
+ * Toma una direccion y devuelve su opuesta, utilizado para backtracking
+ */
 Direccion reverse(Direccion dir) {
   switch (dir) {
   case LEFT:
