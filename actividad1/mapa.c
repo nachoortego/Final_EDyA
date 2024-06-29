@@ -93,46 +93,46 @@ void destruir_mapa(Mapa mapa) {
   free(mapa);
 }
 
-int moveRight(Mapa mapa) {
-  if ((mapa->robot.x + 1) < mapa->M && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#') {
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
-    mapa->robot.x++;
-    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-    printf("R\n");
-    return 1;
-  }
-  return 0;
-}
 
-int moveLeft(Mapa mapa) {
-  if ((mapa->robot.x - 1) >= 0 && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#') {
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
-    mapa->robot.x--;
-    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-    printf("L\n");
-    return 1;
-  }
-  return 0;
-}
+int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
+  switch (dir) {
+    case LEFT:
+      if ((mapa->robot.x - 1) >= 0 && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#' && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '_') {
+        mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
+        mapa->robot.x--;
+        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+        printf("L\n");
+        return 1;
+      }
+      break;
 
-int moveUp(Mapa mapa) {
-  if ((mapa->robot.y - 1) >= 0 && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#') {
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
-    mapa->robot.y--;
-    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-    printf("U\n");
-    return 1;
-  }
-  return 0;
-}
+    case RIGHT:
+      if ((mapa->robot.x + 1) < mapa->M && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#' && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '_') {
+        mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
+        mapa->robot.x++;
+        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+        printf("R\n");
+        return 1;
+      }
+      break;
 
-int moveDown(Mapa mapa) {
-  if ((mapa->robot.y + 1) < mapa->N && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#') {
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
-    mapa->robot.y++;
-    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
-    printf("D\n");
-    return 1;
+    case UP:
+      if ((mapa->robot.y - 1) >= 0 && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#' && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '_') {
+        mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
+        mapa->robot.y--;
+        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+        printf("U\n");
+        return 1;
+      }
+
+    case DOWN:
+      if ((mapa->robot.y + 1) < mapa->N && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#' && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '_') {
+        mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
+        mapa->robot.y++;
+        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
+        printf("D\n");
+        return 1;
+      }
   }
   return 0;
 }

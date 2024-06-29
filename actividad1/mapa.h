@@ -7,9 +7,18 @@
  * Tiene un valor entero y
  */
 typedef struct {
-  int x;
-  int y;
+  int x, y;
 } Punto;
+
+/**
+ * Tipo de dato Direccion para representar direcciones de movimiento
+ */
+typedef enum {
+    LEFT,   // "L"
+    RIGHT,  // "R"
+    UP,     // "U"
+    DOWN    // "D"
+} Direccion;
 
 /**
  * Estructura de Mapa para representar el entorno
@@ -45,27 +54,9 @@ void imprimir_mapa(Mapa);
 void destruir_mapa(Mapa);
 
 /**
- * Mueve el robot hacia la derecha si es posible e imprime "R"
+ * Mueve el robot hacia la direccion indicada si es posible e imprime su caracter correspondiente
  * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
-int moveRight(Mapa);
-
-/**
- * Mueve el robot hacia la izquierda si es posible e imprime "L"
- * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
- */
-int moveLeft(Mapa);
-
-/**
- * Mueve el robot hacia arriba si es posible e imprime "U"
- * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
- */
-int moveUp(Mapa);
-
-/**
- * Mueve el robot hacia abajo si es posible e imprime "D"
- * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
- */
-int moveDown(Mapa);
+int move(Mapa, Direccion, int);
 
 #endif /* __MAPA_H__ */

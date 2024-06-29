@@ -8,19 +8,19 @@ void camino_corto(Mapa mapa) { // Se acerca lo más posible al objetivo hasta ch
   int moved = 1;
   while (moved) {
     moved = 0;
-    while (mapa->robot.x > mapa->final.x && moveLeft(mapa)) { // Va a la izquierda lo mas posible
+    while (mapa->robot.x > mapa->final.x && move(mapa, LEFT, 1)) { // Va a la izquierda lo mas posible
       imprimir_mapa(mapa);
       moved = 1;
     }
-    while (mapa->robot.y > mapa->final.y && moveUp(mapa)) { // Va hacia arriba lo mas posible
+    while (mapa->robot.y > mapa->final.y && move(mapa, UP, 1)) { // Va hacia arriba lo mas posible
       imprimir_mapa(mapa);
       moved = 1;
     }
-    while (mapa->robot.x < mapa->final.x && moveRight(mapa)) { // Va a la derecha lo mas posible
+    while (mapa->robot.x < mapa->final.x && move(mapa, RIGHT, 1)) { // Va a la derecha lo mas posible
       imprimir_mapa(mapa);
       moved = 1;
     }
-    while (mapa->robot.y < mapa->final.y && moveDown(mapa)) { // Va hacia abajo lo mas posible
+    while (mapa->robot.y < mapa->final.y && move(mapa, DOWN, 1)) { // Va hacia abajo lo mas posible
       imprimir_mapa(mapa);
       moved = 1;
     }
@@ -29,7 +29,7 @@ void camino_corto(Mapa mapa) { // Se acerca lo más posible al objetivo hasta ch
 
 void encontrar_camino(Mapa mapa) {
   if(mapa->robot.x == mapa->final.x && mapa->robot.y == mapa->final.y)
-    return;
+    printf("Completado!\n");
   while(mapa->robot.x != mapa->final.x || mapa->robot.y != mapa->final.y) {
     camino_corto(mapa);
   }
