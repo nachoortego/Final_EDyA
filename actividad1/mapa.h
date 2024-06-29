@@ -55,6 +55,7 @@ void destruir_mapa(Mapa);
 
 /**
  * Mueve el robot hacia la direccion indicada si es posible e imprime su caracter correspondiente
+ * El tercer parámetro es ignorarRepetidos. En caso de que sea 1, se ignoran las casillas visitadas, sino se toman como validas
  * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
 int move(Mapa, Direccion, int);

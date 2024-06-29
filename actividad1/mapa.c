@@ -86,10 +86,10 @@ void imprimir_mapa(Mapa mapa) {
 }
 
 void destruir_mapa(Mapa mapa) {
-  for (int i = 0; i < mapa->N; i++) {
+  for (int i = 0; i < mapa->N; i++) { // Libera cada fila
     free(mapa->mat[i]);
   }
-  free(mapa->mat);
+  free(mapa->mat); // Libera la matriz
   free(mapa);
 }
 
@@ -97,7 +97,9 @@ void destruir_mapa(Mapa mapa) {
 int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
   switch (dir) {
     case LEFT:
-      if ((mapa->robot.x - 1) >= 0 && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#' && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '_') {
+      if ((mapa->robot.x - 1) >= 0 &&
+          mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#' &&
+          (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
         mapa->robot.x--;
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
@@ -107,7 +109,9 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
       break;
 
     case RIGHT:
-      if ((mapa->robot.x + 1) < mapa->M && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#' && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '_') {
+      if ((mapa->robot.x + 1) < mapa->M &&
+          mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#' &&
+          (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
         mapa->robot.x++;
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
@@ -117,22 +121,28 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
       break;
 
     case UP:
-      if ((mapa->robot.y - 1) >= 0 && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#' && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '_') {
+      if ((mapa->robot.y - 1) >= 0 &&
+          mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#' &&
+          (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
         mapa->robot.y--;
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
         printf("U\n");
         return 1;
       }
+      break;
 
     case DOWN:
-      if ((mapa->robot.y + 1) < mapa->N && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#' && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '_') {
+      if ((mapa->robot.y + 1) < mapa->N &&
+          mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#' &&
+          (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_';
         mapa->robot.y++;
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R';
         printf("D\n");
         return 1;
       }
+      break;
   }
   return 0;
 }
