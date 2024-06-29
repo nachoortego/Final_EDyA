@@ -31,8 +31,8 @@ static void camino_corto(Mapa mapa) {
   int moved = 1;
   while (moved) {
     moved = 0;
-    int dx = mapa->final.x - mapa->robot.x; // Distancia x al objetivo
-    int dy = mapa->final.y - mapa->robot.y; // Distancia y al objetivo
+    int dx = mapa->objetivo.x - mapa->robot.x; // Distancia x al objetivo
+    int dy = mapa->objetivo.y - mapa->robot.y; // Distancia y al objetivo
 
     // Prioriza movimientos segun la distancia al objetivo
     if (dx > 0 && move(mapa, RIGHT, 1)) {
@@ -58,7 +58,7 @@ static void camino_corto(Mapa mapa) {
  * Comprueba si el robot llegó al objetivo. Devuelve 1 si lo logró, 0 si no.
  */
 static int check_estado(Mapa mapa) {
-  return mapa->robot.x == mapa->final.x && mapa->robot.y == mapa->final.y;
+  return mapa->robot.x == mapa->objetivo.x && mapa->robot.y == mapa->objetivo.y;
 }
 
 /**

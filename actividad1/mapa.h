@@ -28,7 +28,7 @@ typedef enum {
  * Un valor entero N para las filas
  * Un valor entero M para las columnas
  * Un Punto 'robot' para representar el robot en el mapa
- * Un Punto 'final' para representar el punto de llegada
+ * Un Punto 'objetivo' para representar el punto de llegada
  * Una Pila 'camino' que guarda los movimientos del robot y se utiliza para backtracking
  */
 typedef struct {
@@ -36,7 +36,7 @@ typedef struct {
   int N;
   int M;
   Punto robot;
-  Punto final;
+  Punto objetivo;
   Pila camino;
 } _Mapa;
 

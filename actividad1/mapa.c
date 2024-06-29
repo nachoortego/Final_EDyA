@@ -31,8 +31,8 @@ Mapa mapa_crear(char filename[]) {
     fclose(archivo);
     return NULL;
   }
-  if (fscanf(archivo, "%d%d", &mapa->final.y, &mapa->final.x) != 2 ||
-      mapa->final.x < 0 || mapa->final.x >= mapa->M || mapa->final.y < 0 || mapa->final.y >= mapa->N) {
+  if (fscanf(archivo, "%d%d", &mapa->objetivo.y, &mapa->objetivo.x) != 2 ||
+      mapa->objetivo.x < 0 || mapa->objetivo.x >= mapa->M || mapa->objetivo.y < 0 || mapa->objetivo.y >= mapa->N) {
     free(mapa);
     fclose(archivo);
     return NULL;   
@@ -73,7 +73,7 @@ Mapa mapa_crear(char filename[]) {
     mapa->mat[i][mapa->M] = '\0'; // Asegurar la terminación de la cadena
   }
   mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Escribir el robot en la matriz
-  mapa->mat[mapa->final.y][mapa->final.x] = 'F'; // Escribir el final en la matriz
+  mapa->mat[mapa->objetivo.y][mapa->objetivo.x] = 'F'; // Escribir el objetivo en la matriz
 
   fclose(archivo);
   return mapa;
