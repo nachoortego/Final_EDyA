@@ -52,18 +52,43 @@ static int check_estado(Mapa mapa) {
   return mapa->robot.x == mapa->final.x && mapa->robot.y == mapa->final.y;
 }
 
+static int buscar_no_visitados(Mapa mapa) { // Comprueba si hay celdas adyacentes sin visitar, aunque no se acerquen al objetivo
+  if(move(mapa, LEFT, 1))
+    return 1;
+  if(move(mapa, RIGHT, 1))
+    return 1;
+  if(move(mapa, UP, 1))
+    return 1;
+  if(move(mapa, DOWN, 1))
+    return 1;
+  return 0;
+}
+
+// static int buscar_no_visitados(Mapa mapa) { // Comprueba si hay celdas adyacentes sin visitar, aunque no se acerquen al objetivo
+//   Direccion dirs[] = { LEFT, RIGHT, UP, DOWN };
+//   for(int i = 0; i < 4; i++) {
+//     if(move(mapa, dirs[i], 1))
+//       return 1;
+//   }
+//   return 0;
+// }
+
 void encontrar_camino(Mapa mapa) {
   if(check_estado(mapa))
     printf("Completado!\n");
   while(!check_estado(mapa)) {
     camino_corto(mapa);
     if(!check_estado(mapa)) {
-      Direccion retroceder = reverse((Direccion)(intptr_t)pila_tope(mapa->camino));
-      move(mapa, retroceder, 0);
-      imprimir_mapa(mapa);
-      mapa->camino = pila_desapilar(mapa->camino, no_destruir);
-      camino_corto(mapa);
-      getchar();
+      if(buscar_no_visitados(mapa)) {
+        imprimir_direccion(mapa);
+      }
+      else{
+        Direccion retroceder = reverse((Direccion)(intptr_t)pila_tope(mapa->camino));
+        move(mapa, retroceder, 0);
+        imprimir_mapa(mapa);
+        mapa->camino = pila_desapilar(mapa->camino, no_destruir);
+        camino_corto(mapa);
+      }
     }
   }
   pila_imprimir(mapa->camino, imprimir_direccion);

@@ -1,20 +1,9 @@
 6 5
-0 0
+4 1
 5 4
-.#..#
-....#
-##.##
-#....
-#..#.
-####.
-
-_ # _ _ #
-_ _ R _ #
-# # . # #
-# . . . .
-# . . # .
-# # # # F
-
-DRRRUL RDL
-
-funcion Move (switch) que tome direccion y booleano que me diga si moverme a visitados o no
+.###.
+.....
+.###.
+.#.#.
+...#.
+.###.
