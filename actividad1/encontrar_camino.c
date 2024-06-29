@@ -31,19 +31,23 @@ static void camino_corto(Mapa mapa) {
   int moved = 1;
   while (moved) {
     moved = 0;
-    while (mapa->robot.x > mapa->final.x && move(mapa, LEFT, 1)) { // Va a la izquierda lo mas posible
+    int dx = mapa->final.x - mapa->robot.x; // Distancia x al objetivo
+    int dy = mapa->final.y - mapa->robot.y; // Distancia y al objetivo
+
+    // Prioriza movimientos segun la distancia al objetivo
+    if (dx > 0 && move(mapa, RIGHT, 1)) {
       imprimir_mapa(mapa);
       moved = 1;
-    }
-    while (mapa->robot.y > mapa->final.y && move(mapa, UP, 1)) { // Va hacia arriba lo mas posible
+    } 
+    else if (dx < 0 && move(mapa, LEFT, 1)) {
       imprimir_mapa(mapa);
       moved = 1;
-    }
-    while (mapa->robot.x < mapa->final.x && move(mapa, RIGHT, 1)) { // Va a la derecha lo mas posible
+    } 
+    else if (dy > 0 && move(mapa, DOWN, 1)) {
       imprimir_mapa(mapa);
       moved = 1;
-    }
-    while (mapa->robot.y < mapa->final.y && move(mapa, DOWN, 1)) { // Va hacia abajo lo mas posible
+    } 
+    else if (dy < 0 && move(mapa, UP, 1)) {
       imprimir_mapa(mapa);
       moved = 1;
     }

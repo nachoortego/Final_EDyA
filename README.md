@@ -3,5 +3,8 @@
 [Consigna](TPFinal.pdf)
 
 ## TODO
-- Agregar la pila con listas generales
-- Hacer algoritmo optimista
+- [x] Algoritmo funcional
+- [ ] Borrar imprimir_direccion
+- [ ] Borrar colores printf
+- [ ] Borrar getchar
+- [ ] Borrar imprimir_mapa
