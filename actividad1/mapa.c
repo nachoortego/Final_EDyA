@@ -83,17 +83,39 @@ Mapa mapa_crear(char filename[]) {
  * Imprime el mapa por la salida estándar.
  */
 void imprimir_mapa(Mapa mapa) {
-  printf("\033[0;31m"); // rojo
   for (int i = 0; i < mapa->N; i++) {
     for (int j = 0; j < mapa->M; j++) {
-      mapa->mat[i][j] == '#' ? printf("\033[0;35m") : printf("\033[0;31m"); // violeta o rojo
+      if (mapa->mat[i][j] == '#') {
+        printf("\033[0;35m"); // Violeta para obstáculo
+      } 
+      else if (mapa->mat[i][j] == 'F') {
+        printf("\033[0;32m"); // Verde para posición final
+      } else {
+        printf("\033[0;31m"); // Default rojo para cualquier otro caso
+      }
       printf("%c ", mapa->mat[i][j]);
     }
-    printf("\n");
+  printf("\n");
   }
-  printf("\033[0;37m\n");
-  getchar();
+  printf("\033[0;37m\n"); // Restaura el color a blanco después del mapa
+  getchar(); // Espera a que se presione Enter antes de continuar
 }
+// void imprimir_mapa(Mapa mapa) {
+//   printf("\033[0;35m"); // violeta
+//   for (int i = 0; i < mapa->N; i++) {
+//     for (int j = 0; j < mapa->M; j++) {
+//       mapa->mat[i][j] == '_' ? printf("\033[0;36m") : printf("\033[0;35m"); // cyan o violeta
+//       mapa->mat[i][j] == '#' ? printf("\033[0;31m") : printf("\033[0;35m"); // rojo o violeta
+//       mapa->mat[i][j] == 'R' ? printf("\033[0;34m") : printf("\033[0;35m"); // azul o violeta
+//       mapa->mat[i][j] == 'F' ? printf("\033[0;32m") : printf("\033[0;35m"); // verde o violeta
+//       printf("%c ", mapa->mat[i][j]);
+//       printf("\033[0;35m");
+//     }
+//     printf("\n");
+//   }
+//   printf("\033[0;37m\n");
+//   getchar();
+// }
 
 /**
  * Destruye el mapa y sus datos.

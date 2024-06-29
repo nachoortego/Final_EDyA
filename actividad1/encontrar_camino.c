@@ -96,10 +96,9 @@ void encontrar_camino(Mapa mapa) {
       }
       else{ // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
         Direccion retroceder = reverse((Direccion)(intptr_t) pila_tope(mapa->camino)); // Casteo explicito de void* a Direccion
-        move(mapa, retroceder, 0);
+        move(mapa, retroceder, 0); // Retrocede usando la pila, se pasa el valor 0 a 'move' para permitir volver a casillas visitadas
         imprimir_mapa(mapa);
         mapa->camino = pila_desapilar(mapa->camino, no_destruir);
-        camino_corto(mapa);
       }
     }
   }
