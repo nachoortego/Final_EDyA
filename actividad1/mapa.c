@@ -118,6 +118,11 @@ void imprimir_mapa(Mapa mapa) {
 // }
 
 /**
+ * Funcion que se pasa como parámetro a pila_destruir, no destruye el dato.
+ */
+void no_destruir(void* dir) {}
+
+/**
  * Destruye el mapa y sus datos.
  */
 void destruir_mapa(Mapa mapa) {
@@ -125,6 +130,7 @@ void destruir_mapa(Mapa mapa) {
     free(mapa->mat[i]);
   }
   free(mapa->mat); // Libera la matriz
+  pila_destruir(mapa->camino, no_destruir); // Libera la pila 
   free(mapa);
 }
 

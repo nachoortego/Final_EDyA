@@ -32,9 +32,9 @@ static void imprimir_direccion(void *dato) {
  */
 static void camino_corto(Mapa mapa) {
   srand(time(NULL));
-  int priority = rand() % 2;
   int moved = 1;
   while (moved) {
+    int priority = rand() % 2;
     moved = 0;
     int dx = mapa->objetivo.x - mapa->robot.x; // Distancia x al objetivo
     int dy = mapa->objetivo.y - mapa->robot.y; // Distancia y al objetivo
