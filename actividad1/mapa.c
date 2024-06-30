@@ -155,6 +155,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         mapa->camino = pila_apilar(mapa->camino, (void*)LEFT, no_copiar); // Apila el movimiento realizado
         printf("L\n");
+        imprimir_mapa(mapa);
         return 1;
       }
       break;
@@ -168,6 +169,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         mapa->camino = pila_apilar(mapa->camino, (void*)RIGHT, no_copiar ); // Apila el movimiento realizado
         printf("R\n");
+        imprimir_mapa(mapa);
         return 1;
       }
       break;
@@ -181,6 +183,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         mapa->camino = pila_apilar(mapa->camino, (void*)UP, no_copiar); // Apila el movimiento realizado
         printf("U\n");
+        imprimir_mapa(mapa);
         return 1;
       }
       break;
@@ -194,6 +197,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         mapa->camino = pila_apilar(mapa->camino, (void*)DOWN, no_copiar); // Apila el movimiento realizado
         printf("D\n");
+        imprimir_mapa(mapa);
         return 1;
       }
       break;
