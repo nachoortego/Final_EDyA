@@ -19,18 +19,28 @@ Mapa mapa_crear(char filename[]) {
   Mapa mapa = malloc(sizeof(_Mapa));
   assert(mapa != NULL);
 
-  // Leer dimensiones y puntos a y b (primero y, luego x) , tambien verificar lectura y validez de los datos
-  if (fscanf(archivo, "%d%d", &mapa->N, &mapa->M) != 2 || mapa->N <= 0 || mapa->M <= 0) {
+  // Leer dimensiones y puntos robot y objetivo (primero y, luego x) , tambien verificar lectura y validez de los datos
+  char buffer[100]; // Leer primera línea
+  if (fgets(buffer, sizeof(buffer), archivo) == NULL) {
     free(mapa);
     fclose(archivo);
     return NULL;
   }
+
+  // Analizar los dos primeros valores de la primera línea 
+  if (sscanf(buffer, "%d%d", &mapa->N, &mapa->M) != 2 || mapa->N <= 0 || mapa->M <= 0) {
+    free(mapa);
+    fclose(archivo);
+    return NULL;
+  }
+  // Segunda linea
   if (fscanf(archivo, "%d%d", &mapa->robot.y, &mapa->robot.x) != 2 ||
       mapa->robot.x < 0 || mapa->robot.x >= mapa->M || mapa->robot.y < 0 || mapa->robot.y >= mapa->N) {
     free(mapa);
     fclose(archivo);
     return NULL;
   }
+  // Tercera linea
   if (fscanf(archivo, "%d%d", &mapa->objetivo.y, &mapa->objetivo.x) != 2 ||
       mapa->objetivo.x < 0 || mapa->objetivo.x >= mapa->M || mapa->objetivo.y < 0 || mapa->objetivo.y >= mapa->N) {
     free(mapa);
