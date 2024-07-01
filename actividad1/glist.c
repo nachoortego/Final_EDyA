@@ -46,16 +46,3 @@ void glist_recorrer(GList list, FuncionVisitante visit) {
   for (GNode *node = list; node != NULL; node = node->next)
     visit(node->data);
 }
-
-/**
- * Dada una lista general, retorne una nueva lista con los elementos que cumplen con el predicado.
- */
-GList glist_filtrar(GList list, FuncionCopia c, Predicado p) {
-  GList listaFiltro = glist_crear();
-  for (GNode *node = list; node != NULL; node = node->next) {
-    if (p(node->data)) {
-      listaFiltro = glist_agregar_inicio(listaFiltro, node->data, c);
-    }
-  }
-  return listaFiltro;
-}

@@ -18,6 +18,10 @@ Mapa mapa_crear(char filename[]) {
 
   Mapa mapa = malloc(sizeof(_Mapa));
   assert(mapa != NULL);
+  mapa->N = 0;  // Inicializa N 
+  mapa->M = 0;  // Inicializa M
+  mapa->mat = NULL;  // Inicializa mat
+  mapa->camino = NULL;  // Inicializa camino
 
   // Leer dimensiones y puntos robot y objetivo (primero y, luego x) , tambien verificar lectura y validez de los datos
   char buffer[100]; // Leer primera línea
@@ -84,6 +88,8 @@ Mapa mapa_crear(char filename[]) {
   }
   mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Escribir el robot en la matriz
   mapa->mat[mapa->objetivo.y][mapa->objetivo.x] = 'F'; // Escribir el objetivo en la matriz
+
+  mapa->camino = pila_crear(); // Inicializar la pila
 
   fclose(archivo);
   return mapa;
