@@ -36,8 +36,8 @@ Pila pila_apilar(Pila pila, void* dato, FuncionCopia copy);
 Pila pila_desapilar(Pila pila, FuncionDestructora destroy);
 
 /**
- * Imprime los elementos de la pila
+ * Recorrido de la pila, utilizando la funcion pasada
 */
-void pila_imprimir(Pila pila, FuncionVisitante visit);
+void pila_recorrer(Pila pila, FuncionVisitante visit);
 
 #endif // PILA_H

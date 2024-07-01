@@ -100,22 +100,6 @@ void imprimir_mapa(Mapa mapa) {
   printf("\033[0;37m\n"); // Restaura el color a blanco después del mapa
   getchar(); // Espera a que se presione Enter antes de continuar
 }
-// void imprimir_mapa(Mapa mapa) {
-//   printf("\033[0;35m"); // violeta
-//   for (int i = 0; i < mapa->N; i++) {
-//     for (int j = 0; j < mapa->M; j++) {
-//       mapa->mat[i][j] == '_' ? printf("\033[0;36m") : printf("\033[0;35m"); // cyan o violeta
-//       mapa->mat[i][j] == '#' ? printf("\033[0;31m") : printf("\033[0;35m"); // rojo o violeta
-//       mapa->mat[i][j] == 'R' ? printf("\033[0;34m") : printf("\033[0;35m"); // azul o violeta
-//       mapa->mat[i][j] == 'F' ? printf("\033[0;32m") : printf("\033[0;35m"); // verde o violeta
-//       printf("%c ", mapa->mat[i][j]);
-//       printf("\033[0;35m");
-//     }
-//     printf("\n");
-//   }
-//   printf("\033[0;37m\n");
-//   getchar();
-// }
 
 /**
  * Funcion que se pasa como parámetro a pila_destruir, no destruye el dato.
@@ -144,10 +128,11 @@ static void* no_copiar(void* dato) {
 
 /**
  * Mueve el robot hacia la direccion indicada si es posible e imprime su caracter correspondiente.
- * Cada movimiento es agregado a la pila del mapa.
+ * Cada movimiento nuevo es agregado a la pila del mapa.
+ * En el caso utilizar la pila para backtraking, no se apilan los movimientos.
  * El tercer parámetro es ignorarRepetidos. 
  * En caso de que ignorarRepetidos sea 1, las casillas validas se consideran obstaculos.
- * En caso de quue ignorarRepetidos sea 0, las casillas visitadas se consideran validas.
+ * En caso de que ignorarRepetidos sea 0, las casillas visitadas se consideran validas.
  * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
 int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
@@ -159,7 +144,8 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.x--; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        mapa->camino = pila_apilar(mapa->camino, (void*)LEFT, no_copiar); // Apila el movimiento realizado
+        if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
+          mapa->camino = pila_apilar(mapa->camino, (void*)LEFT, no_copiar); // Apila el movimiento realizado
         printf("L\n");
         imprimir_mapa(mapa);
         return 1;
@@ -173,7 +159,8 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.x++; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        mapa->camino = pila_apilar(mapa->camino, (void*)RIGHT, no_copiar ); // Apila el movimiento realizado
+        if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
+          mapa->camino = pila_apilar(mapa->camino, (void*)RIGHT, no_copiar ); // Apila el movimiento realizado
         printf("R\n");
         imprimir_mapa(mapa);
         return 1;
@@ -187,7 +174,8 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.y--; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        mapa->camino = pila_apilar(mapa->camino, (void*)UP, no_copiar); // Apila el movimiento realizado
+        if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
+          mapa->camino = pila_apilar(mapa->camino, (void*)UP, no_copiar); // Apila el movimiento realizado
         printf("U\n");
         imprimir_mapa(mapa);
         return 1;
@@ -201,7 +189,8 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.y++; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        mapa->camino = pila_apilar(mapa->camino, (void*)DOWN, no_copiar); // Apila el movimiento realizado
+        if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
+          mapa->camino = pila_apilar(mapa->camino, (void*)DOWN, no_copiar); // Apila el movimiento realizado
         printf("D\n");
         imprimir_mapa(mapa);
         return 1;

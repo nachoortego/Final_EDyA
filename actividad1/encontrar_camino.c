@@ -81,7 +81,6 @@ static void no_destruir(void* dir) {}
  * De esta manera el robot no tiene peor caso, ya que su movimiento es aleatorio.
  */
 static int buscar_no_visitados(Mapa mapa) {
-  srand(time(NULL));
   int priority = rand() % 2; // Eleccion aleatoria
   Direccion dirs[4];
 
@@ -124,6 +123,6 @@ void encontrar_camino(Mapa mapa) {
       }
     }
   }
-  pila_imprimir(mapa->camino, imprimir_direccion);
+  pila_recorrer(mapa->camino, imprimir_direccion);
   printf("\nCompletado!\n");
 }

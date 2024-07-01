@@ -55,8 +55,8 @@ Pila pila_desapilar(Pila pila, FuncionDestructora destroy) {
 }
 
 /**
- * Imprime los elementos de la pila
+ * Recorrido de la pila, utilizando la funcion pasada
 */
-void pila_imprimir(Pila pila, FuncionVisitante visit) {
+void pila_recorrer(Pila pila, FuncionVisitante visit) {
   glist_recorrer(pila, visit);
 }

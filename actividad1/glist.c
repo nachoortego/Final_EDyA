@@ -43,7 +43,6 @@ GList glist_agregar_inicio(GList list, void *data, FuncionCopia copy) {
  * Recorrido de la lista, utilizando la funcion pasada.
  */
 void glist_recorrer(GList list, FuncionVisitante visit) {
-  assert(list != NULL);
   for (GNode *node = list; node != NULL; node = node->next)
     visit(node->data);
 }
