@@ -6,7 +6,7 @@
 #include <time.h>
 #include "mapa.h"
 
-static void imprimir_direccion(void *dato) {
+__attribute__((unused)) static void imprimir_direccion(void *dato) {
   Direccion dir = (Direccion)(intptr_t)dato; // Cast explícito
   switch (dir) {
     case LEFT:
@@ -106,15 +106,49 @@ static int buscar_no_visitados(Mapa mapa) {
   return 0; // No se encontraron celdas sin visitar
 }
 
+/*
+ * Función que se encarga de usar el sensor y actualizar el mapa.
+*/
+void usar_sensor(Mapa mapa) {
+  int d1, d2, d3, d4;
+  printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
+  fflush(stdout);
+  scanf("%d%d%d%d", &d1, &d2, &d3,& d4);
+  fprintf(stderr, "SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
+
+  for(int i = 1; i < d1 && (mapa->robot.y - i) >= 0; i++)
+    if((mapa->mat[mapa->robot.y - i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F'))
+      mapa->mat[mapa->robot.y - i][mapa->robot.x] = '.'; // Sensor hacia arriba
+
+  for(int i = 1; i < d2 && (mapa->robot.y + i) >= 0; i++)
+    if((mapa->mat[mapa->robot.y + i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F'))
+      mapa->mat[mapa->robot.y + i][mapa->robot.x] = '.'; // Sensor hacia abajo
+
+  for(int i = 1; i < d3 && (mapa->robot.x - i) >= 0; i++)
+    if((mapa->mat[mapa->robot.y][mapa->robot.x - i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F'))
+      mapa->mat[mapa->robot.y][mapa->robot.x - i] = '.'; // Sensor hacia la izquierda
+
+  for(int i = 1; i < d4 && (mapa->robot.x + i) < mapa->M; i++)
+    if((mapa->mat[mapa->robot.y][mapa->robot.x + i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F'))
+      mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
+
+  imprimir_mapa(mapa);
+}
+
 /**
  * Dado un mapa valido, encuentra un camino al objetivo e imprime cada movimiento del robot.
  */
 void encontrar_camino(Mapa mapa) {
-  if(check_estado(mapa)) // Si el robot ya esta en el objetivo
-    fprintf(stderr,"Completado!\n");
+  if(check_estado(mapa)) { // Si el robot ya esta en el objetivo
+    printf("! \n");
+    fflush(stdout);
+  }
+
+  usar_sensor(mapa); // Usa el sensor por primera vez para revelar el mapa
   while(!check_estado(mapa)) { // Mientras el robot no este en el objetivo
     camino_corto(mapa); // Se acerca lo mas posible al objetivo
     if(!check_estado(mapa)) {
+      usar_sensor(mapa); // Usa el sensor para actualizar el mapa
       if(buscar_no_visitados(mapa)) {} // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
         Direccion retroceder = reverse((Direccion)(intptr_t) pila_tope(mapa->camino)); // Casteo explicito de void* a Direccion
@@ -123,6 +157,7 @@ void encontrar_camino(Mapa mapa) {
       }
     }
   }
-  pila_recorrer(mapa->camino, imprimir_direccion);
-  fprintf(stderr,"\nCompletado!\n");
+  /*! BORRAR: pila_recorrer(mapa->camino, imprimir_direccion);*/
+  printf("! UDLR\n");
+  fflush(stdout);
 }

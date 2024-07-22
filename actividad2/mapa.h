@@ -30,6 +30,7 @@ typedef enum {
  * Un Punto 'robot' para representar el robot en el mapa
  * Un Punto 'objetivo' para representar el punto de llegada
  * Una Pila 'camino' que guarda los movimientos del robot y se utiliza para backtracking
+ * Un arreglo de Puntos 'sensores' para representar las posiciones en las que el sensor fue utilizado
  */
 typedef struct {
   char** mat;
@@ -38,6 +39,7 @@ typedef struct {
   Punto robot;
   Punto objetivo;
   Pila camino;
+  Punto* sensores;
 } _Mapa;
 
 typedef _Mapa* Mapa;

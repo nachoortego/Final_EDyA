@@ -21,6 +21,7 @@ Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   mapa->robot.x = j1;  // Inicializa robot.x
   mapa->objetivo.y = i2;  // Inicializa objetivo.y
   mapa->objetivo.x = j2;  // Inicializa objetivo.x
+  mapa->sensores = NULL;  // Inicializa sensores
 
   // Inicializar matriz
   mapa->mat = malloc(sizeof(char*) * mapa->N);
@@ -60,7 +61,7 @@ void imprimir_mapa(Mapa mapa) {
   fprintf(stderr,"\n");
   }
   fprintf(stderr,"\033[0;37m\n"); // Restaura el color a blanco después del mapa
-  getchar(); // Espera a que se presione Enter antes de continuar
+  //getchar(); // Espera a que se presione Enter antes de continuar
 }
 
 /**
