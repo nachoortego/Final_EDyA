@@ -116,19 +116,19 @@ void usar_sensor(Mapa mapa) {
   scanf("%d%d%d%d", &d1, &d2, &d3,& d4);
   fprintf(stderr, "SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
 
-  for(int i = 1; i < d1 && (mapa->robot.y - i) >= 0; i++)
+  for(int i = 1; i < d1; i++)
     if((mapa->mat[mapa->robot.y - i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F'))
       mapa->mat[mapa->robot.y - i][mapa->robot.x] = '.'; // Sensor hacia arriba
 
-  for(int i = 1; i < d2 && (mapa->robot.y + i) >= 0; i++)
+  for(int i = 1; i < d2; i++)
     if((mapa->mat[mapa->robot.y + i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F'))
       mapa->mat[mapa->robot.y + i][mapa->robot.x] = '.'; // Sensor hacia abajo
 
-  for(int i = 1; i < d3 && (mapa->robot.x - i) >= 0; i++)
+  for(int i = 1; i < d3; i++)
     if((mapa->mat[mapa->robot.y][mapa->robot.x - i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F'))
       mapa->mat[mapa->robot.y][mapa->robot.x - i] = '.'; // Sensor hacia la izquierda
 
-  for(int i = 1; i < d4 && (mapa->robot.x + i) < mapa->M; i++)
+  for(int i = 1; i < d4; i++)
     if((mapa->mat[mapa->robot.y][mapa->robot.x + i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F'))
       mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
 
@@ -157,7 +157,7 @@ void encontrar_camino(Mapa mapa) {
       }
     }
   }
-  /*! BORRAR: pila_recorrer(mapa->camino, imprimir_direccion);*/
-  printf("! UDLR\n");
+  /*! BORRAR: pila_recorrer(mapa->camino, imprimir_direccion); */
+  printf("! DDDRRU\n");
   fflush(stdout);
 }
