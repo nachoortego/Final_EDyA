@@ -11,12 +11,6 @@ int main() {
   int i2 , j2;
   scanf("%d%d", &i2, &j2);
 
-  // fprintf(stderr,"%d %d %d\n", N, M, D);
-  // fprintf(stderr,"%d %d\n", i1, j1);
-  // fprintf(stderr,"%d %d\n", i2, j2);
-  // i1 = 2;
-  // j1 = 3;
-
   Mapa mapa = mapa_crear(N, M, i1, j1, i2, j2);
   imprimir_mapa(mapa);
   encontrar_camino(mapa);

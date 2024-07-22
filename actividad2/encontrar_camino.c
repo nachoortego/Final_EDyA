@@ -24,6 +24,35 @@ __attribute__((unused)) static void imprimir_direccion(void *dato) {
   }
 }
 
+/*
+ * Función que se encarga de usar el sensor y actualizar el mapa.
+*/
+void usar_sensor(Mapa mapa) {
+  int d1, d2, d3, d4;
+  printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
+  fflush(stdout);
+  scanf("%d%d%d%d", &d1, &d2, &d3,& d4);
+  fprintf(stderr, "SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
+
+  for(int i = 1; i < d1; i++)
+    if((mapa->mat[mapa->robot.y - i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F'))
+      mapa->mat[mapa->robot.y - i][mapa->robot.x] = '.'; // Sensor hacia arriba
+
+  for(int i = 1; i < d2; i++)
+    if((mapa->mat[mapa->robot.y + i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F'))
+      mapa->mat[mapa->robot.y + i][mapa->robot.x] = '.'; // Sensor hacia abajo
+
+  for(int i = 1; i < d3; i++)
+    if((mapa->mat[mapa->robot.y][mapa->robot.x - i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F'))
+      mapa->mat[mapa->robot.y][mapa->robot.x - i] = '.'; // Sensor hacia la izquierda
+
+  for(int i = 1; i < d4; i++)
+    if((mapa->mat[mapa->robot.y][mapa->robot.x + i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F'))
+      mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
+
+  imprimir_mapa(mapa);
+}
+
 /**
  * Acerca al robot lo más posible al objetivo, hasta chocarse obstaculos que se lo impidan.
  * Considera las celdas visitadas como obstaculos, por eso a la funcion move se le pasa un 1. 
@@ -31,9 +60,11 @@ __attribute__((unused)) static void imprimir_direccion(void *dato) {
  * De esta manera el robot no tiene peor caso, ya que su movimiento es aleatorio.
  */
 static void camino_corto(Mapa mapa) {
+  usar_sensor(mapa); // Usa el sensor para actualizar el mapa
   fprintf(stderr, "CAMINO CORTO\n");
   srand(time(NULL));
   int moved = 1;
+  int any_moved = 0;
   while (moved) {
     int priority = rand() % 2;
     moved = 0;
@@ -61,6 +92,13 @@ static void camino_corto(Mapa mapa) {
       else if (dx < 0 && move(mapa, LEFT, 1))
         moved = 1;
     }
+
+    if(moved) 
+      any_moved = 1;
+  }
+  if(any_moved){
+    fprintf(stderr, "> ANY MOVED\n");
+    usar_sensor(mapa); // Usa el sensor para actualizar el mapa
   }
 }
 
@@ -108,35 +146,6 @@ static int buscar_no_visitados(Mapa mapa) {
   return 0; // No se encontraron celdas sin visitar
 }
 
-/*
- * Función que se encarga de usar el sensor y actualizar el mapa.
-*/
-void usar_sensor(Mapa mapa) {
-  int d1, d2, d3, d4;
-  printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
-  fflush(stdout);
-  scanf("%d%d%d%d", &d1, &d2, &d3,& d4);
-  fprintf(stderr, "SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
-
-  for(int i = 1; i < d1; i++)
-    if((mapa->mat[mapa->robot.y - i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F'))
-      mapa->mat[mapa->robot.y - i][mapa->robot.x] = '.'; // Sensor hacia arriba
-
-  for(int i = 1; i < d2; i++)
-    if((mapa->mat[mapa->robot.y + i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F'))
-      mapa->mat[mapa->robot.y + i][mapa->robot.x] = '.'; // Sensor hacia abajo
-
-  for(int i = 1; i < d3; i++)
-    if((mapa->mat[mapa->robot.y][mapa->robot.x - i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F'))
-      mapa->mat[mapa->robot.y][mapa->robot.x - i] = '.'; // Sensor hacia la izquierda
-
-  for(int i = 1; i < d4; i++)
-    if((mapa->mat[mapa->robot.y][mapa->robot.x + i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F'))
-      mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
-
-  imprimir_mapa(mapa);
-}
-
 /**
  * Dado un mapa valido, encuentra un camino al objetivo e imprime cada movimiento del robot.
  */
@@ -145,12 +154,10 @@ void encontrar_camino(Mapa mapa) {
     printf("! \n");
     fflush(stdout);
   }
-
-  usar_sensor(mapa); // Usa el sensor por primera vez para revelar el mapa
   while(!check_estado(mapa)) { // Mientras el robot no este en el objetivo
     camino_corto(mapa); // Se acerca lo mas posible al objetivo
     if(!check_estado(mapa)) {
-      usar_sensor(mapa); // Usa el sensor para actualizar el mapa
+      /*! IMPLEMENTAR: funcion que mira si en el array de sensores ya fue usado*/
       if(buscar_no_visitados(mapa)) {}  // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
         fprintf(stderr, "RETROCEDER\n");
