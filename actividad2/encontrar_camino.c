@@ -158,6 +158,6 @@ void encontrar_camino(Mapa mapa) {
     }
   }
   /*! BORRAR: pila_recorrer(mapa->pila, imprimir_direccion); */
-  printf("! DDDRRU\n");
+  printf("! %s\n", mapa->camino->direccion);
   fflush(stdout);
 }
