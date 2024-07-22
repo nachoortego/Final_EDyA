@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 // leer_archivo()
 // - lee el archivo `data` segun el formato especificado en el trabajo.
@@ -9,7 +10,56 @@
 // - Devuelve un arreglo de arreglos con las filas del entorno, o NULL en caso
 //   de que el formato sea invalido
 char** leer_archivo(FILE* data, int* n, int* m, int* max_d, int* i1, int* j1, int* i2, int* j2) {
-	// Esta funcion se puede completar usando el lector de archivos que escribio para la actividad 1
+  *n = 0;  // Inicializa N 
+  *m = 0;  // Inicializa M
+  *max_d = 0;  // Inicializa max_d
+
+  // Analizar los valores de la primera línea 
+  if (fscanf(data, "%d%d%d", n, m, max_d) != 3 || *n <= 0 || *m <= 0 || *max_d <= 0) {
+		printf("%d %d %d\n",  *n, *m, *max_d);
+    return NULL;}
+
+  // Segunda linea
+  if (fscanf(data, "%d%d", i1, j1) != 2 ||
+      *j1 < 0 || *j1 >= *m || *i1 < 0 || *i1 >= *n)
+    return NULL;
+
+  // Tercera linea
+  if (fscanf(data, "%d%d", i2, j2) != 2 ||
+      *j2 < 0 || *j2 >= *m || *i2 < 0 || *i2 >= *n)
+    return NULL;   
+
+
+  // Leer linea en blanco
+  char line[255];
+  if (fgets(line, 255, data) == NULL)
+    return NULL;
+
+  // Inicializar matriz
+  char** mapa = malloc(sizeof(char*) * *n);
+  for (int i = 0; i < *n; i++)
+    mapa[i] = malloc(sizeof(char) * (*m + 1)); // +1 para el '\0'
+
+  // Verificar dimensiones del mapa y caracteres del mapa
+  for (int i = 0; i < *n; i++) {
+    if (fgets(line, 255, data) == NULL || strlen(line) < *m) {
+      free(mapa);
+      return NULL; 
+    }
+
+    for (int j = 0; j < *m; j++)
+      if (line[j] != '#' && line[j] != '.') {
+        free(mapa);
+        return NULL;
+      }
+
+    strncpy(mapa[i], line, *m); // Copiar los datos
+    mapa[i][*m] = '\0'; // Asegurar la terminación de la cadena
+  }
+  mapa[*i1][*j1] = 'R'; // Escribir el robot en la matriz
+  mapa[*i2][*j2] = 'F'; // Escribir el objetivo en la matriz
+
+  return mapa;
 }
 
 // El resto de este archivo no tiene relevancia para el estudiante.
