@@ -151,13 +151,13 @@ void encontrar_camino(Mapa mapa) {
       usar_sensor(mapa); // Usa el sensor para actualizar el mapa
       if(buscar_no_visitados(mapa)) {} // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
-        Direccion retroceder = reverse((Direccion)(intptr_t) pila_tope(mapa->camino)); // Casteo explicito de void* a Direccion
+        Direccion retroceder = reverse((Direccion)(intptr_t) pila_tope(mapa->pila)); // Casteo explicito de void* a Direccion
         move(mapa, retroceder, 0); // Retrocede usando la pila, se pasa el valor 0 a 'move' para permitir volver a casillas visitadas
-        mapa->camino = pila_desapilar(mapa->camino, no_destruir);
+        mapa->pila = pila_desapilar(mapa->pila, no_destruir);
       }
     }
   }
-  /*! BORRAR: pila_recorrer(mapa->camino, imprimir_direccion); */
+  /*! BORRAR: pila_recorrer(mapa->pila, imprimir_direccion); */
   printf("! DDDRRU\n");
   fflush(stdout);
 }

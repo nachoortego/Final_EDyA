@@ -2,6 +2,7 @@
 #define __MAPA_H__
 
 #include "pila.h"
+#include "array.h"
 
 /**
  * Estructura de Punto para representar coordenadas
@@ -16,10 +17,10 @@ typedef struct {
  * Tipo de dato Direccion para representar direcciones de movimiento
  */
 typedef enum {
-    LEFT,   // "L"
-    RIGHT,  // "R"
-    UP,     // "U"
-    DOWN    // "D"
+  LEFT,   // "L"
+  RIGHT,  // "R"
+  UP,     // "U"
+  DOWN    // "D"
 } Direccion;
 
 /**
@@ -29,8 +30,8 @@ typedef enum {
  * Un valor entero M para las columnas
  * Un Punto 'robot' para representar el robot en el mapa
  * Un Punto 'objetivo' para representar el punto de llegada
- * Una Pila 'camino' que guarda los movimientos del robot y se utiliza para backtracking
- * Un arreglo de Puntos 'sensores' para representar las posiciones en las que el sensor fue utilizado
+ * Una Pila 'pila' que guarda los movimientos del robot y se utiliza para backtracking
+ * Un Arreglo 'camino' que guarda los movimientos del robot para enviar al sensor
  */
 typedef struct {
   char** mat;
@@ -38,8 +39,8 @@ typedef struct {
   int M;
   Punto robot;
   Punto objetivo;
-  Pila camino;
-  Punto* sensores;
+  Pila pila;
+  Arreglo camino;
 } _Mapa;
 
 typedef _Mapa* Mapa;

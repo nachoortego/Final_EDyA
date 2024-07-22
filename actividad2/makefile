@@ -2,10 +2,10 @@
 TARGET = robot
 
 # Archivos fuente
-SRC = main.c mapa.c glist.c pila.c
+SRC = main.c mapa.c glist.c pila.c array.c
 
 # Archivos de encabezado
-HEADERS = mapa.h glist.h pila.h
+HEADERS = mapa.h glist.h pila.h array.h
 
 # Compilador
 CC = gcc
@@ -26,3 +26,4 @@ main.o: main.c mapa.h glist.h pila.h
 mapa.o: mapa.c mapa.h
 glist.o: glist.c glist.h
 pila.o: pila.c pila.h glist.h
+array.o: array.c array.h

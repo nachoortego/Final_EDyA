@@ -16,12 +16,11 @@ Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   mapa->N = N;  // Inicializa N 
   mapa->M = M;  // Inicializa M
   mapa->mat = NULL;  // Inicializa mat
-  mapa->camino = NULL;  // Inicializa camino
+  mapa->pila = NULL;  // Inicializa pila
   mapa->robot.y = i1;  // Inicializa robot.y
   mapa->robot.x = j1;  // Inicializa robot.x
   mapa->objetivo.y = i2;  // Inicializa objetivo.y
   mapa->objetivo.x = j2;  // Inicializa objetivo.x
-  mapa->sensores = NULL;  // Inicializa sensores
 
   // Inicializar matriz
   mapa->mat = malloc(sizeof(char*) * mapa->N);
@@ -37,7 +36,7 @@ Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Escribir el robot en la matriz
   mapa->mat[mapa->objetivo.y][mapa->objetivo.x] = 'F'; // Escribir el objetivo en la matriz
 
-  mapa->camino = pila_crear(); // Inicializar la pila
+  mapa->pila = pila_crear(); // Inicializar la pila
 
   return mapa;
 }
@@ -77,7 +76,7 @@ void destruir_mapa(Mapa mapa) {
     free(mapa->mat[i]);
   }
   free(mapa->mat); // Libera la matriz
-  pila_destruir(mapa->camino, no_destruir); // Libera la pila 
+  pila_destruir(mapa->pila, no_destruir); // Libera la pila 
   free(mapa);
 }
 
@@ -108,7 +107,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->robot.x--; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
-          mapa->camino = pila_apilar(mapa->camino, (void*)LEFT, no_copiar); // Apila el movimiento realizado
+          mapa->pila = pila_apilar(mapa->pila, (void*)LEFT, no_copiar); // Apila el movimiento realizado
         fprintf(stderr,"L\n");
         imprimir_mapa(mapa);
         return 1;
@@ -123,7 +122,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->robot.x++; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
-          mapa->camino = pila_apilar(mapa->camino, (void*)RIGHT, no_copiar ); // Apila el movimiento realizado
+          mapa->pila = pila_apilar(mapa->pila, (void*)RIGHT, no_copiar ); // Apila el movimiento realizado
         fprintf(stderr,"R\n");
         imprimir_mapa(mapa);
         return 1;
@@ -138,7 +137,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->robot.y--; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
-          mapa->camino = pila_apilar(mapa->camino, (void*)UP, no_copiar); // Apila el movimiento realizado
+          mapa->pila = pila_apilar(mapa->pila, (void*)UP, no_copiar); // Apila el movimiento realizado
         fprintf(stderr,"U\n");
         imprimir_mapa(mapa);
         return 1;
@@ -153,7 +152,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->robot.y++; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
-          mapa->camino = pila_apilar(mapa->camino, (void*)DOWN, no_copiar); // Apila el movimiento realizado
+          mapa->pila = pila_apilar(mapa->pila, (void*)DOWN, no_copiar); // Apila el movimiento realizado
         fprintf(stderr,"D\n");
         imprimir_mapa(mapa);
         return 1;
