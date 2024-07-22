@@ -10,16 +10,16 @@ static void imprimir_direccion(void *dato) {
   Direccion dir = (Direccion)(intptr_t)dato; // Cast explícito
   switch (dir) {
     case LEFT:
-      printf("L");
+      fprintf(stderr,"L");
       break;
     case RIGHT:
-      printf("R");
+      fprintf(stderr,"R");
       break;
     case UP:
-      printf("U");
+      fprintf(stderr,"U");
       break;
     case DOWN:
-      printf("D");
+      fprintf(stderr,"D");
       break;
   }
 }
@@ -111,7 +111,7 @@ static int buscar_no_visitados(Mapa mapa) {
  */
 void encontrar_camino(Mapa mapa) {
   if(check_estado(mapa)) // Si el robot ya esta en el objetivo
-    printf("Completado!\n");
+    fprintf(stderr,"Completado!\n");
   while(!check_estado(mapa)) { // Mientras el robot no este en el objetivo
     camino_corto(mapa); // Se acerca lo mas posible al objetivo
     if(!check_estado(mapa)) {
@@ -124,5 +124,5 @@ void encontrar_camino(Mapa mapa) {
     }
   }
   pila_recorrer(mapa->camino, imprimir_direccion);
-  printf("\nCompletado!\n");
+  fprintf(stderr,"\nCompletado!\n");
 }

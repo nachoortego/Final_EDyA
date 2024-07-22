@@ -1,6 +1,10 @@
 #!/bin/sh
 
-# Compilar el programa utilizando el Makefile
+# Parar y eliminar cualquier proceso anterior
+pkill -f sensor
+pkill -f programa
+
+# Compilar el programa principal utilizando el Makefile
 make clean
 make
 
