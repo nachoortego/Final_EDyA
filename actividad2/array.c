@@ -10,7 +10,7 @@
  */
 Arreglo arreglo_crear(int capacidad) {
   Arreglo arr = malloc(sizeof(_Arreglo));
-  char* direccion = malloc(sizeof(char) * capacidad);
+  void** direccion = malloc(sizeof(void*) * capacidad);
   arr->capacidad = capacidad;
   arr->direccion = direccion;
   arr->ultimo = 0;
@@ -21,8 +21,11 @@ Arreglo arreglo_crear(int capacidad) {
  * Libera la memoria utilizada por el arreglo.
  *
  * @param arr Puntero al arreglo a destruir.
+ * @param dest Función que libera la memoria de un elemento del arreglo.
  */
-void arreglo_destruir(Arreglo arr) {
+void arreglo_destruir(Arreglo arr, FuncionDestructora dest) {
+  for (int i = 0; i < arr->ultimo; i++)
+    dest(arr->direccion[i]);
   free(arr->direccion);
   free(arr);
 }
@@ -31,34 +34,35 @@ void arreglo_destruir(Arreglo arr) {
  * Escribe un dato en el arreglo. Si el arreglo está lleno, duplica su capacidad.
  *
  * @param arr Puntero al arreglo.
- * @param dato Caracter a añadir al arreglo.
+ * @param dato Dato a añadir al arreglo.
+ * @param copy Función que copia un elemento del arreglo.
  */
-void arreglo_escribir(Arreglo arr, char dato) {
-  arr->direccion[arr->ultimo] = dato;
+void arreglo_escribir(Arreglo arr, void* dato, FuncionCopia copy) {
+  arr->direccion[arr->ultimo] = copy(dato);
   arr->ultimo++;
   if (arr->ultimo == arr->capacidad) {
     arr->capacidad *= 2;
-    arr->direccion = realloc(arr->direccion, sizeof(char) * arr->capacidad);
+    arr->direccion = realloc(arr->direccion, sizeof(void*) * arr->capacidad);
   }
 }
 
 /**
  * Obtiene la capacidad actual del arreglo.
  *
- * @param arreglo Puntero al arreglo.
+ * @param arr Puntero al arreglo.
  * @return Capacidad del arreglo.
  */
-int arreglo_capacidad(Arreglo arreglo) {
-  return arreglo->capacidad;
+int arreglo_capacidad(Arreglo arr) {
+  return arr->capacidad;
 }
 
 /**
  * Imprime el contenido del arreglo.
  *
  * @param arreglo Puntero al arreglo.
+ * @param visit Función que imprime un elemento del arreglo.
  */
-void arreglo_imprimir(Arreglo arreglo) {
-  for (int i = 0; i < arreglo->ultimo; i++)
-    printf("%c", arreglo->direccion[i]);
-  printf("\n");
+void arreglo_recorrer(Arreglo arr, FuncionVisitante visit) {
+  for (int i = 0; i < arr->ultimo; i++)
+    visit(arr->direccion[i]);
 }

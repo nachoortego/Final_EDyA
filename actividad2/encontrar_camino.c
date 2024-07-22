@@ -114,6 +114,15 @@ static int check_estado(Mapa mapa) {
  */
 static void no_destruir(void* dir) {}
 
+/*
+ * Funcion que imprime un char, utilizado para enviar el camino al sensor.
+*/
+__attribute__((unused)) static void  imprimir_char(void* dato) {
+  char c = *(char*)dato;
+  // fprintf(stderr, "%c", c);
+  printf("%c", c);
+}
+
 /**
  * Se mueve a una celda adyacente no visitada, independientemente de si se acerca o no al objetivo.
  * 'priority' es una variable aleatoria que puede ser 1 o 0, y altera el eje en el que el robot se mueve.
@@ -146,6 +155,13 @@ static int buscar_no_visitados(Mapa mapa) {
   return 0; // No se encontraron celdas sin visitar
 }
 
+static void enviar_camino(Mapa mapa) {
+  printf("! ");
+  arreglo_recorrer(mapa->camino, imprimir_char);
+  printf("\n");
+  fflush(stdout);
+}
+
 /**
  * Dado un mapa valido, encuentra un camino al objetivo e imprime cada movimiento del robot.
  */
@@ -168,6 +184,5 @@ void encontrar_camino(Mapa mapa) {
     }
   }
   /*! BORRAR: pila_recorrer(mapa->pila, imprimir_direccion); */
-  printf("! %s\n", mapa->camino->direccion);
-  fflush(stdout);
+  enviar_camino(mapa); // Envia el camino al sensor
 }

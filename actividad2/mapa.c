@@ -59,13 +59,17 @@ void imprimir_mapa(Mapa mapa) {
   fprintf(stderr,"\n");
   }
   fprintf(stderr,"\033[0;37m\n"); // Restaura el color a blanco después del mapa
-  //getchar(); // Espera a que se presione Enter antes de continuar
 }
 
 /**
  * Funcion que se pasa como parámetro a pila_destruir, no destruye el dato.
  */
-void no_destruir(void* dir) {}
+void no_destruir(void* dato) {}
+
+/**
+ * Funcion que se pasa como parámetro a arreglo_destruir para liberar el char*.
+ */
+void destruir(void* dato) { free(dato); }
 
 /**
  * Destruye el mapa y sus datos.
@@ -76,7 +80,7 @@ void destruir_mapa(Mapa mapa) {
   }
   free(mapa->mat); // Libera la matriz
   pila_destruir(mapa->pila, no_destruir); // Libera la pila 
-  arreglo_destruir(mapa->camino); // Libera el arreglo camino
+  arreglo_destruir(mapa->camino, destruir); // Libera el Arreglo camino
   free(mapa);
 }
 
@@ -89,6 +93,16 @@ static void* no_copiar(void* dato) {
 }
 
 /**
+ * Funcion local que toma arreglo_escribir como argumento. 
+ * Devuelve una copia fisica.
+ */
+static char* copia_direccion(char* dato) {
+  char* nuevoDato = malloc(sizeof(char));
+  *nuevoDato = *dato;
+  return nuevoDato; // Devuelve el mismo dato sin realizar una copia
+}
+
+/**
  * Mueve el robot hacia la direccion indicada si es posible e imprime su caracter correspondiente.
  * Cada movimiento nuevo es agregado a la pila del mapa.
  * En el caso utilizar la pila para backtraking, no se apilan los movimientos.
@@ -98,6 +112,7 @@ static void* no_copiar(void* dato) {
  * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
 int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
+  char movimiento;
   switch (dir) {
     case LEFT:
       if ((mapa->robot.x - 1) >= 0 &&
@@ -108,7 +123,9 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
           mapa->pila = pila_apilar(mapa->pila, (void*)LEFT, no_copiar); // Apila el movimiento realizado
-        arreglo_escribir(mapa->camino,'L');
+        
+        movimiento = 'L';
+        arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
         imprimir_mapa(mapa);
         return 1;
       }
@@ -123,8 +140,9 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
           mapa->pila = pila_apilar(mapa->pila, (void*)RIGHT, no_copiar ); // Apila el movimiento realizado
-        arreglo_escribir(mapa->camino,'R');
-        imprimir_mapa(mapa);
+        
+        movimiento = 'R';
+        arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);        imprimir_mapa(mapa);
         return 1;
       }
       break;
@@ -138,7 +156,9 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
           mapa->pila = pila_apilar(mapa->pila, (void*)UP, no_copiar); // Apila el movimiento realizado
-        arreglo_escribir(mapa->camino,'U');
+        
+        movimiento = 'U';
+        arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
         imprimir_mapa(mapa);
         return 1;
       }
@@ -153,7 +173,9 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
           mapa->pila = pila_apilar(mapa->pila, (void*)DOWN, no_copiar); // Apila el movimiento realizado
-        arreglo_escribir(mapa->camino,'D');
+        
+        movimiento = 'D';
+        arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
         imprimir_mapa(mapa);
         return 1;
       }
