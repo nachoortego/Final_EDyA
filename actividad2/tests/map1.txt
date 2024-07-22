@@ -1,0 +1,16 @@
+5 6
+0 0
+2 2
+......
+.###..
+...#..
+......
+......
+
+_ _ R . .
+. # # # .
+. # j # .
+. # . . .
+. . . . .
+
+si no me puedo mover para ningun lado optimista, me voy para donde pueda

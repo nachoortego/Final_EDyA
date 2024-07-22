@@ -56,9 +56,7 @@ char** leer_archivo(FILE* data, int* n, int* m, int* max_d, int* i1, int* j1, in
     strncpy(mapa[i], line, *m); // Copiar los datos
     mapa[i][*m] = '\0'; // Asegurar la terminación de la cadena
   }
-  mapa[*i1][*j1] = 'R'; // Escribir el robot en la matriz
-  mapa[*i2][*j2] = 'F'; // Escribir el objetivo en la matriz
-
+	
   return mapa;
 }
 
