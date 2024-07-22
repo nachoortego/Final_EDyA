@@ -31,6 +31,7 @@ __attribute__((unused)) static void imprimir_direccion(void *dato) {
  * De esta manera el robot no tiene peor caso, ya que su movimiento es aleatorio.
  */
 static void camino_corto(Mapa mapa) {
+  fprintf(stderr, "CAMINO CORTO\n");
   srand(time(NULL));
   int moved = 1;
   while (moved) {
@@ -81,6 +82,7 @@ static void no_destruir(void* dir) {}
  * De esta manera el robot no tiene peor caso, ya que su movimiento es aleatorio.
  */
 static int buscar_no_visitados(Mapa mapa) {
+  fprintf(stderr, "NO VISITADOS\n");
   int priority = rand() % 2; // Eleccion aleatoria
   Direccion dirs[4];
 
@@ -149,8 +151,9 @@ void encontrar_camino(Mapa mapa) {
     camino_corto(mapa); // Se acerca lo mas posible al objetivo
     if(!check_estado(mapa)) {
       usar_sensor(mapa); // Usa el sensor para actualizar el mapa
-      if(buscar_no_visitados(mapa)) {} // Se mueve a casillas no visitadas
+      if(buscar_no_visitados(mapa)) {}  // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
+        fprintf(stderr, "RETROCEDER\n");
         Direccion retroceder = reverse((Direccion)(intptr_t) pila_tope(mapa->pila)); // Casteo explicito de void* a Direccion
         move(mapa, retroceder, 0); // Retrocede usando la pila, se pasa el valor 0 a 'move' para permitir volver a casillas visitadas
         mapa->pila = pila_desapilar(mapa->pila, no_destruir);
