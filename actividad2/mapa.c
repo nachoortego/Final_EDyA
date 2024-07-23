@@ -7,8 +7,15 @@
 #define LINE_SIZE 255
 
 /**
- * Toma como argumento las dimensiones del mapa y las coordenadas del robot y el objetivo.
- * Devuelve un mapa con todas sus casillas ocupadas, y robot y objetivo ubicados en el mismo.
+ * Crea un nuevo mapa con las dimensiones dadas y coloca el robot y el objetivo en las coordenadas especificadas.
+ * 
+ * @param N Número de filas del mapa.
+ * @param M Número de columnas del mapa.
+ * @param i1 Fila de la posición inicial del robot.
+ * @param j1 Columna de la posición inicial del robot.
+ * @param i2 Fila de la posición del objetivo.
+ * @param j2 Columna de la posición del objetivo.
+ * @return Un puntero al nuevo mapa creado.
  */
 Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   Mapa mapa = malloc(sizeof(_Mapa));
@@ -42,6 +49,8 @@ Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
 
 /**
  * Imprime el mapa por la salida estándar.
+ * 
+ * @param mapa El mapa que se desea imprimir.
  */
 void imprimir_mapa(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) {
@@ -63,16 +72,19 @@ void imprimir_mapa(Mapa mapa) {
 
 /**
  * Funcion que se pasa como parámetro a pila_destruir, no destruye el dato.
+ * @param dato El dato a no destruir.
  */
 void no_destruir_pila(void* dato) {}
 
 /**
  * Funcion que se pasa como parámetro a arreglo_destruir para liberar el char*.
+ * @param dato El dato a liberar.
  */
 void destruir_arrego(void* dato) { free(dato); }
 
 /**
  * Destruye el mapa y sus datos.
+ * @param mapa El mapa a destruir.
  */
 void destruir_mapa(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) { // Libera cada fila
@@ -87,7 +99,8 @@ void destruir_mapa(Mapa mapa) {
 
 /**
  * Funcion local que toma pila_apilar como argumento. 
- * No devuelve una copia fisica.
+ * @param dato El dato a copiar.
+ * @return No devuelve una copia fisica.
  */
 static void* no_copiar(void* dato) {
   return dato; // Devuelve el mismo dato sin realizar una copia
@@ -95,7 +108,8 @@ static void* no_copiar(void* dato) {
 
 /**
  * Funcion local que toma arreglo_escribir como argumento. 
- * Devuelve una copia fisica.
+ * @param dato El dato a copiar.
+ * @return Devuelve una copia fisica.
  */
 static char* copia_direccion(char* dato) {
   char* nuevoDato = malloc(sizeof(char));
@@ -104,13 +118,15 @@ static char* copia_direccion(char* dato) {
 }
 
 /**
- * Mueve el robot hacia la direccion indicada si es posible e imprime su caracter correspondiente.
- * Cada movimiento nuevo es agregado a la pila del mapa.
- * En el caso utilizar la pila para backtraking, no se apilan los movimientos.
- * El tercer parámetro es ignorarRepetidos. 
- * En caso de que ignorarRepetidos sea 1, las casillas validas se consideran obstaculos.
- * En caso de que ignorarRepetidos sea 0, las casillas visitadas se consideran validas.
- * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
+ * Mueve el robot hacia la dirección indicada si es posible e imprime su carácter correspondiente.
+ * Cada movimiento nuevo es agregado a la pila del mapa. 
+ * Cada movimiento es agregado al arreglo camino.
+ * En el caso de utilizar la pila para backtracking, no se apilan los movimientos.
+ * 
+ * @param mapa El mapa en el que se realiza el movimiento.
+ * @param dir La dirección hacia la cual mover el robot.
+ * @param ignorarRepetidos Indica si se deben considerar las casillas visitadas como válidas (0) o como obstáculos (1).
+ * @return 1 si el movimiento fue posible, 0 si no fue posible.
  */
 int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
   char movimiento;
@@ -186,7 +202,10 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
 }
 
 /**
- * Toma una direccion y devuelve su opuesta, utilizado para backtracking
+ * Toma una dirección y devuelve su opuesta, utilizado para backtracking.
+ * 
+ * @param dir La dirección para la cual se desea obtener la opuesta.
+ * @return La dirección opuesta a la proporcionada.
  */
 Direccion reverse(Direccion dir) {
   switch (dir) {

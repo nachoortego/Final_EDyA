@@ -6,33 +6,44 @@
 #include <time.h>
 #include "mapa.h"
 
+/**
+ * Imprime la dirección proporcionada.
+ * 
+ * @param dato Dirección a imprimir. Se espera un valor de tipo `Direccion`.
+ */
 __attribute__((unused)) static void imprimir_direccion(void *dato) {
   Direccion dir = (Direccion)(intptr_t)dato; // Cast explícito
   switch (dir) {
     case LEFT:
-      fprintf(stderr,"L");
+      fprintf(stderr, "L");
       break;
     case RIGHT:
-      fprintf(stderr,"R");
+      fprintf(stderr, "R");
       break;
     case UP:
-      fprintf(stderr,"U");
+      fprintf(stderr, "U");
       break;
     case DOWN:
-      fprintf(stderr,"D");
+      fprintf(stderr, "D");
       break;
   }
 }
 
-/*
- * Función que se encarga de usar el sensor y actualizar el mapa.
-*/
+/**
+ * Usa el sensor para actualizar el mapa en la posición actual del robot.
+ * 
+ * Si el sensor nunca ha sido utilizado en la posición actual, se obtiene la
+ * información del sensor y se actualiza el mapa en las direcciones correspondientes.
+ * 
+ * @param mapa El mapa en el que se encuentra el robot.
+ * @return 1 si el sensor fue usado y el mapa fue actualizado, 0 si el sensor ya había sido usado en esa posición.
+ */
 int usar_sensor(Mapa mapa) {
-  if(!tablahash_buscar(mapa->sensores,&mapa->robot)) { // Si el sensor nunca fue utilizado en esa posicion
+  if (!tablahash_buscar(mapa->sensores, &mapa->robot)) { // Si el sensor nunca fue utilizado en esa posición
     int d1, d2, d3, d4;
     printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
     fflush(stdout);
-    scanf("%d%d%d%d", &d1, &d2, &d3,& d4);
+    scanf("%d%d%d%d", &d1, &d2, &d3, &d4);
     fprintf(stderr, "SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
 
     for(int i = 1; i < d1; i++)
@@ -59,10 +70,10 @@ int usar_sensor(Mapa mapa) {
 }
 
 /**
- * Acerca al robot lo más posible al objetivo, hasta chocarse obstaculos que se lo impidan.
- * Considera las celdas visitadas como obstaculos, por eso a la funcion move se le pasa un 1. 
- * 'priority' es una variable aleatoria que puede ser 1 o 0, y altera el eje en el que el robot se mueve.
- * De esta manera el robot no tiene peor caso, ya que su movimiento es aleatorio.
+ * Acerca al robot lo más posible al objetivo, evitando obstáculos y considerando celdas visitadas como obstáculos.
+ * La dirección de movimiento se decide aleatoriamente, priorizando primero los movimientos horizontales o verticales.
+ * 
+ * @param mapa El mapa en el que el robot se mueve.
  */
 static void camino_corto(Mapa mapa) {
   usar_sensor(mapa); // Usa el sensor para actualizar el mapa
@@ -108,34 +119,42 @@ static void camino_corto(Mapa mapa) {
 }
 
 /**
- * Comprueba si el robot llegó al objetivo. Devuelve 1 si lo logró, 0 si no.
+ * Comprueba si el robot ha llegado al objetivo.
+ * 
+ * @param mapa El mapa en el que el robot se encuentra.
+ * @return 1 si el robot está en la posición del objetivo, 0 en caso contrario.
  */
 static int check_estado(Mapa mapa) {
   return mapa->robot.x == mapa->objetivo.x && mapa->robot.y == mapa->objetivo.y;
 }
 
 /**
- * Funcion que se pasa como parámetro a pila_desapilar, no destruye el dato.
+ * Funcion que no realiza ninguna acción, utilizada para la pila_desapilar.
+ * 
+ * @param dir Datos que se deben ignorar, ya que la función no realiza ninguna operación.
  */
 static void no_destruir(void* dir) {}
 
-/*
- * Funcion que imprime un char, utilizado para enviar el camino al sensor.
-*/
-__attribute__((unused)) static void  imprimir_char(void* dato) {
+/**
+ * Imprime un caracter, utilizado para enviar el camino al sensor.
+ * 
+ * @param dato Puntero a un carácter que se desea imprimir.
+ */
+static void imprimir_char(void* dato) {
   char c = *(char*)dato;
-  // fprintf(stderr, "%c", c);
   printf("%c", c);
 }
 
 /**
- * Se mueve a una celda adyacente no visitada, independientemente de si se acerca o no al objetivo.
- * 'priority' es una variable aleatoria que puede ser 1 o 0, y altera el eje en el que el robot se mueve.
- * De esta manera el robot no tiene peor caso, ya que su movimiento es aleatorio.
+ * Busca celdas adyacentes no visitadas y mueve el robot hacia una de ellas.
+ * La dirección de movimiento se decide aleatoriamente, priorizando primero los movimientos horizontales o verticales.
+ * 
+ * @param mapa El mapa en el que el robot se mueve.
+ * @return 1 si se movió a una celda no visitada, 0 si no se encontraron celdas no visitadas.
  */
 static int buscar_no_visitados(Mapa mapa) {
   fprintf(stderr, "NO VISITADOS\n");
-  int priority = rand() % 2; // Eleccion aleatoria
+  int priority = rand() % 2; // Elección aleatoria
   Direccion dirs[4];
 
   // Arreglo de direcciones posibles
@@ -147,7 +166,7 @@ static int buscar_no_visitados(Mapa mapa) {
   } else {
     Direccion temp[] = { UP, DOWN, LEFT, RIGHT }; // Si priority es 0, opta por movimientos verticales
     for (int i = 0; i < 4; i++) {
-        dirs[i] = temp[i];
+      dirs[i] = temp[i];
     }
   }
 
@@ -160,6 +179,11 @@ static int buscar_no_visitados(Mapa mapa) {
   return 0; // No se encontraron celdas sin visitar
 }
 
+/**
+ * Envía el camino recorrido al sensor.
+ * 
+ * @param mapa El mapa que contiene el camino que se desea enviar.
+ */
 static void enviar_camino(Mapa mapa) {
   printf("! ");
   arreglo_recorrer(mapa->camino, imprimir_char);
@@ -168,25 +192,28 @@ static void enviar_camino(Mapa mapa) {
 }
 
 /**
- * Dado un mapa valido, encuentra un camino al objetivo e imprime cada movimiento del robot.
+ * Encuentra un camino al objetivo.
+ * Al terminar, envía el camino al programa sensor para verificar.
+ * 
+ * @param mapa El mapa en el que el robot se mueve.
  */
 void encontrar_camino(Mapa mapa) {
-  if(check_estado(mapa)) { // Si el robot ya esta en el objetivo
+  if (check_estado(mapa)) { // Si el robot ya está en el objetivo
     printf("! \n");
     fflush(stdout);
   }
   srand(time(NULL)); // Semilla aleatoria
-  while(!check_estado(mapa)) { // Mientras el robot no este en el objetivo
-    camino_corto(mapa); // Se acerca lo mas posible al objetivo
-    if(!check_estado(mapa)) {
-      if(buscar_no_visitados(mapa)) {}  // Se mueve a casillas no visitadas
+  while (!check_estado(mapa)) { // Mientras el robot no esté en el objetivo
+    camino_corto(mapa); // Se acerca lo más posible al objetivo
+    if (!check_estado(mapa)) {
+      if (buscar_no_visitados(mapa)) {}  // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
         fprintf(stderr, "RETROCEDER\n");
-        Direccion retroceder = reverse((Direccion)(intptr_t) pila_tope(mapa->pila)); // Casteo explicito de void* a Direccion
+        Direccion retroceder = reverse((Direccion)(intptr_t)pila_tope(mapa->pila)); // Casteo explícito de void* a Direccion
         move(mapa, retroceder, 0); // Retrocede usando la pila, se pasa el valor 0 a 'move' para permitir volver a casillas visitadas
         mapa->pila = pila_desapilar(mapa->pila, no_destruir);
       }
     }
   }
-  enviar_camino(mapa); // Envia el camino al sensor
+  enviar_camino(mapa); // Envía el camino al sensor
 }

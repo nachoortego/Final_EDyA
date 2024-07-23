@@ -5,7 +5,9 @@
 
 /**
  * Función hash para la estructura Punto.
- * Retorna un valor hash para el punto (x, y).
+ * 
+ * @param punto Un puntero a la estructura Punto para la cual se calculará el valor hash.
+ * @return Un valor hash calculado para el punto (x, y).
  */
 unsigned hash_punto(void* punto) {
   Punto* p = (Punto*)punto;
@@ -14,7 +16,10 @@ unsigned hash_punto(void* punto) {
 
 /**
  * Función de comparación para la estructura Punto.
- * Retorna 0 si los puntos son iguales, y un valor distinto de 0 si no lo son.
+ * 
+ * @param p1 Un puntero al primer punto a comparar.
+ * @param p2 Un puntero al segundo punto a comparar.
+ * @return 0 si los puntos son iguales, y un valor distinto de 0 si no lo son.
  */
 int comparar_puntos(void* p1, void* p2) {
   Punto* punto1 = (Punto*)p1;
@@ -24,7 +29,9 @@ int comparar_puntos(void* p1, void* p2) {
 
 /**
  * Función para copiar un punto.
- * Retorna un nuevo punto con los mismos valores.
+ * 
+ * @param punto Un puntero al punto que se desea copiar.
+ * @return Un puntero a un nuevo punto con los mismos valores que el original.
  */
 void* copiar_punto(void* punto) {
   Punto* punto_original = (Punto*)punto;
@@ -38,6 +45,8 @@ void* copiar_punto(void* punto) {
 
 /**
  * Función destructora para liberar un punto.
+ * 
+ * @param punto Un puntero al punto que se desea liberar.
  */
 void destruir_punto(void* punto) {
   free(punto);
