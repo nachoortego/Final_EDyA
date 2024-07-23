@@ -188,6 +188,5 @@ void encontrar_camino(Mapa mapa) {
       }
     }
   }
-  /*! BORRAR: pila_recorrer(mapa->pila, imprimir_direccion); */
   enviar_camino(mapa); // Envia el camino al sensor
 }
