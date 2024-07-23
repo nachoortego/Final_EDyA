@@ -12,7 +12,6 @@ int main() {
   scanf("%d%d", &i2, &j2);
 
   Mapa mapa = mapa_crear(N, M, i1, j1, i2, j2);
-  imprimir_mapa(mapa);
   encontrar_camino(mapa);
   destruir_mapa(mapa);
 

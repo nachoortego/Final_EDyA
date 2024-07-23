@@ -7,29 +7,6 @@
 #include "mapa.h"
 
 /**
- * Imprime la dirección proporcionada.
- * 
- * @param dato Dirección a imprimir. Se espera un valor de tipo `Direccion`.
- */
-__attribute__((unused)) static void imprimir_direccion(void *dato) {
-  Direccion dir = (Direccion)(intptr_t)dato; // Cast explícito
-  switch (dir) {
-    case LEFT:
-      fprintf(stderr, "L");
-      break;
-    case RIGHT:
-      fprintf(stderr, "R");
-      break;
-    case UP:
-      fprintf(stderr, "U");
-      break;
-    case DOWN:
-      fprintf(stderr, "D");
-      break;
-  }
-}
-
-/**
  * Usa el sensor para actualizar el mapa en la posición actual del robot.
  * 
  * Si el sensor nunca ha sido utilizado en la posición actual, se obtiene la
@@ -44,7 +21,6 @@ int usar_sensor(Mapa mapa) {
     printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
     fflush(stdout);
     scanf("%d%d%d%d", &d1, &d2, &d3, &d4);
-    fprintf(stderr, "> SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
 
     for(int i = 1; i < d1; i++)
       if((mapa->mat[mapa->robot.y - i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F'))
@@ -63,7 +39,6 @@ int usar_sensor(Mapa mapa) {
         mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
 
     tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
-    imprimir_mapa(mapa);
     return 1;
   }
   return 0;
@@ -76,7 +51,6 @@ int usar_sensor(Mapa mapa) {
  * @param mapa El mapa en el que el robot se mueve.
  */
 static void camino_corto(Mapa mapa) {
-  fprintf(stderr, "> CAMINO CORTO\n");
   usar_sensor(mapa); // Usa el sensor para actualizar el mapa
   int moved = 1;
   int any_moved = 0;
@@ -112,7 +86,6 @@ static void camino_corto(Mapa mapa) {
       any_moved = 1;
   }
   if(any_moved){ // Si se movio, usa el sensor nuevamente
-    fprintf(stderr, "> SE MOVIO, USA SENSOR\n");
     if(usar_sensor(mapa)) // Usa el sensor para actualizar el mapa
       camino_corto(mapa); // Vuelve a buscar un camino corto
   }
@@ -153,7 +126,6 @@ static void imprimir_char(void* dato) {
  * @return 1 si se movió a una celda no visitada, 0 si no se encontraron celdas no visitadas.
  */
 static int buscar_no_visitados(Mapa mapa) {
-  fprintf(stderr, "> NO VISITADOS\n");
   int priority = rand() % 2; // Elección aleatoria
   Direccion dirs[4];
 
@@ -208,7 +180,6 @@ void encontrar_camino(Mapa mapa) {
     if (!check_estado(mapa)) {
       if (buscar_no_visitados(mapa)) {}  // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
-        fprintf(stderr, "> RETROCEDER\n");
         Direccion retroceder = reverse((Direccion)(intptr_t)pila_tope(mapa->pila)); // Casteo explícito de void* a Direccion
         move(mapa, retroceder, 0); // Retrocede usando la pila, se pasa el valor 0 a 'move' para permitir volver a casillas visitadas
         mapa->pila = pila_desapilar(mapa->pila, no_destruir);
