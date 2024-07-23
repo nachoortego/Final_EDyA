@@ -27,7 +27,7 @@ __attribute__((unused)) static void imprimir_direccion(void *dato) {
 /*
  * Función que se encarga de usar el sensor y actualizar el mapa.
 */
-void usar_sensor(Mapa mapa) {
+int usar_sensor(Mapa mapa) {
   if(!tablahash_buscar(mapa->sensores,&mapa->robot)) { // Si el sensor nunca fue utilizado en esa posicion
     int d1, d2, d3, d4;
     printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
@@ -53,7 +53,9 @@ void usar_sensor(Mapa mapa) {
 
     tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
     imprimir_mapa(mapa);
+    return 1;
   }
+  return 0;
 }
 
 /**
@@ -65,7 +67,6 @@ void usar_sensor(Mapa mapa) {
 static void camino_corto(Mapa mapa) {
   usar_sensor(mapa); // Usa el sensor para actualizar el mapa
   fprintf(stderr, "CAMINO CORTO\n");
-  srand(time(NULL));
   int moved = 1;
   int any_moved = 0;
   while (moved) {
@@ -101,7 +102,8 @@ static void camino_corto(Mapa mapa) {
   }
   if(any_moved){ // Si se movio, usa el sensor nuevamente
     fprintf(stderr, "SE MOVIO, USA SENSOR\n");
-    usar_sensor(mapa); // Usa el sensor para actualizar el mapa
+    if(usar_sensor(mapa)) // Usa el sensor para actualizar el mapa
+      camino_corto(mapa); // Vuelve a buscar un camino corto
   }
 }
 
@@ -173,10 +175,10 @@ void encontrar_camino(Mapa mapa) {
     printf("! \n");
     fflush(stdout);
   }
+  srand(time(NULL)); // Semilla aleatoria
   while(!check_estado(mapa)) { // Mientras el robot no este en el objetivo
     camino_corto(mapa); // Se acerca lo mas posible al objetivo
     if(!check_estado(mapa)) {
-      /*! IMPLEMENTAR: funcion que mira si en el array de sensores ya fue usado*/
       if(buscar_no_visitados(mapa)) {}  // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
         fprintf(stderr, "RETROCEDER\n");
