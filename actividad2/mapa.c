@@ -15,13 +15,13 @@ Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   assert(mapa != NULL);
   mapa->N = N;  // Inicializa N 
   mapa->M = M;  // Inicializa M
-  mapa->mat = NULL;  // Inicializa mat
-  mapa->pila = pila_crear(); // Inicializar la pila
-  mapa->camino = arreglo_crear(2); // Inicializar el arreglo camino
   mapa->robot.y = i1;  // Inicializa robot.y
   mapa->robot.x = j1;  // Inicializa robot.x
   mapa->objetivo.y = i2;  // Inicializa objetivo.y
   mapa->objetivo.x = j2;  // Inicializa objetivo.x
+  mapa->pila = pila_crear(); // Inicializar la pila
+  mapa->camino = arreglo_crear(mapa->N * mapa->M); // Inicializar el arreglo camino
+  mapa->sensores = tablahash_crear((mapa->N * mapa->M) / 2, copiar_punto, comparar_puntos, destruir_punto, hash_punto); // Inicializar la tabla de sensores
 
   // Inicializar matriz
   mapa->mat = malloc(sizeof(char*) * mapa->N);
@@ -64,12 +64,12 @@ void imprimir_mapa(Mapa mapa) {
 /**
  * Funcion que se pasa como parámetro a pila_destruir, no destruye el dato.
  */
-void no_destruir(void* dato) {}
+void no_destruir_pila(void* dato) {}
 
 /**
  * Funcion que se pasa como parámetro a arreglo_destruir para liberar el char*.
  */
-void destruir(void* dato) { free(dato); }
+void destruir_arrego(void* dato) { free(dato); }
 
 /**
  * Destruye el mapa y sus datos.
@@ -79,8 +79,9 @@ void destruir_mapa(Mapa mapa) {
     free(mapa->mat[i]);
   }
   free(mapa->mat); // Libera la matriz
-  pila_destruir(mapa->pila, no_destruir); // Libera la pila 
-  arreglo_destruir(mapa->camino, destruir); // Libera el Arreglo camino
+  pila_destruir(mapa->pila, no_destruir_pila); // Libera la pila 
+  arreglo_destruir(mapa->camino, destruir_arrego); // Libera el Arreglo camino
+  tablahash_destruir(mapa->sensores); // Libera la tabla de sensores
   free(mapa);
 }
 

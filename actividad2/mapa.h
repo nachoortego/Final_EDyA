@@ -3,15 +3,8 @@
 
 #include "pila.h"
 #include "array.h"
-
-/**
- * Estructura de Punto para representar coordenadas
- * Tiene un valor entero x
- * Tiene un valor entero y
- */
-typedef struct {
-  int x, y;
-} Punto;
+#include "tablahash.h"
+#include "punto.h"
 
 /**
  * Tipo de dato Direccion para representar direcciones de movimiento
@@ -32,6 +25,7 @@ typedef enum {
  * Un Punto 'objetivo' para representar el punto de llegada
  * Una Pila 'pila' que guarda los movimientos del robot y se utiliza para backtracking
  * Un Arreglo 'camino' que guarda los movimientos del robot para enviar al sensor
+ * Una TablaHash 'sensores' que guarda los puntos donde el robot utilizo el sensor
  */
 typedef struct {
   char** mat;
@@ -41,6 +35,7 @@ typedef struct {
   Punto objetivo;
   Pila pila;
   Arreglo camino;
+  TablaHash sensores;
 } _Mapa;
 
 typedef _Mapa* Mapa;

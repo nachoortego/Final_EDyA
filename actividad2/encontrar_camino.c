@@ -50,6 +50,7 @@ void usar_sensor(Mapa mapa) {
     if((mapa->mat[mapa->robot.y][mapa->robot.x + i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F'))
       mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
 
+  tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
   imprimir_mapa(mapa);
 }
 
@@ -96,7 +97,7 @@ static void camino_corto(Mapa mapa) {
     if(moved) 
       any_moved = 1;
   }
-  if(any_moved){
+  if(any_moved && !tablahash_buscar(mapa->sensores,&mapa->robot)){ // Si se movio el sensor no fue utilizado en esa posicion, lo usa nuevamente
     fprintf(stderr, "> ANY MOVED\n");
     usar_sensor(mapa); // Usa el sensor para actualizar el mapa
   }
