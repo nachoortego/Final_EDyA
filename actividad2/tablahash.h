@@ -26,11 +26,6 @@ TablaHash tablahash_crear(unsigned capacidad, FuncionCopiadora copia,
 int tablahash_nelems(TablaHash tabla);
 
 /**
- * Actualiza el factor de carga de la tabla.
- */
-float tablahash_factorcarga(TablaHash tabla);
-
-/**
  * Retorna la capacidad de la tabla.
  */
 int tablahash_capacidad(TablaHash tabla);
@@ -55,10 +50,5 @@ void *tablahash_buscar(TablaHash tabla, void *dato);
  * Elimina el dato de la tabla que coincida con el dato dado.
  */
 void tablahash_eliminar(TablaHash tabla, void *dato);
-
-/**
- * Rehashea la tabla.
- */
-void tabla_rehashear(TablaHash tabla);
 
 #endif /* __TABLAHASH_H__ */
