@@ -2,6 +2,7 @@
 #include "glist.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /**
  * Casillas en la que almacenaremos los datos de la tabla hash.
@@ -97,6 +98,7 @@ void tablahash_insertar(TablaHash tabla, void *dato) {
 
   // Si no se encontró, agregar al inicio de la lista.
   tabla->elems[idx].lista = glist_agregar_inicio(tabla->elems[idx].lista, dato, tabla->copia);
+  fprintf(stderr, "---Dato agregado\n");
   tabla->numElems++;
 }
 
@@ -113,10 +115,11 @@ void *tablahash_buscar(TablaHash tabla, void *dato) {
   GList lista = tabla->elems[idx].lista;
   for (GNode *node = lista; node != NULL; node = node->next) {
     if (tabla->comp(node->data, dato) == 0) {
+      fprintf(stderr, "---Dato encontrado\n");
       return node->data;
     }
   }
-
+  fprintf(stderr, "---Dato no encontrado\n");
   return NULL;
 }
 

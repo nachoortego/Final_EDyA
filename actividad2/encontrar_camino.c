@@ -28,30 +28,32 @@ __attribute__((unused)) static void imprimir_direccion(void *dato) {
  * Función que se encarga de usar el sensor y actualizar el mapa.
 */
 void usar_sensor(Mapa mapa) {
-  int d1, d2, d3, d4;
-  printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
-  fflush(stdout);
-  scanf("%d%d%d%d", &d1, &d2, &d3,& d4);
-  fprintf(stderr, "SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
+  if(!tablahash_buscar(mapa->sensores,&mapa->robot)) { // Si el sensor nunca fue utilizado en esa posicion
+    int d1, d2, d3, d4;
+    printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
+    fflush(stdout);
+    scanf("%d%d%d%d", &d1, &d2, &d3,& d4);
+    fprintf(stderr, "SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
 
-  for(int i = 1; i < d1; i++)
-    if((mapa->mat[mapa->robot.y - i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F'))
-      mapa->mat[mapa->robot.y - i][mapa->robot.x] = '.'; // Sensor hacia arriba
+    for(int i = 1; i < d1; i++)
+      if((mapa->mat[mapa->robot.y - i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F'))
+        mapa->mat[mapa->robot.y - i][mapa->robot.x] = '.'; // Sensor hacia arriba
 
-  for(int i = 1; i < d2; i++)
-    if((mapa->mat[mapa->robot.y + i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F'))
-      mapa->mat[mapa->robot.y + i][mapa->robot.x] = '.'; // Sensor hacia abajo
+    for(int i = 1; i < d2; i++)
+      if((mapa->mat[mapa->robot.y + i][mapa->robot.x] != '_') && (mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F'))
+        mapa->mat[mapa->robot.y + i][mapa->robot.x] = '.'; // Sensor hacia abajo
 
-  for(int i = 1; i < d3; i++)
-    if((mapa->mat[mapa->robot.y][mapa->robot.x - i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F'))
-      mapa->mat[mapa->robot.y][mapa->robot.x - i] = '.'; // Sensor hacia la izquierda
+    for(int i = 1; i < d3; i++)
+      if((mapa->mat[mapa->robot.y][mapa->robot.x - i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F'))
+        mapa->mat[mapa->robot.y][mapa->robot.x - i] = '.'; // Sensor hacia la izquierda
 
-  for(int i = 1; i < d4; i++)
-    if((mapa->mat[mapa->robot.y][mapa->robot.x + i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F'))
-      mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
+    for(int i = 1; i < d4; i++)
+      if((mapa->mat[mapa->robot.y][mapa->robot.x + i] != '_') && (mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F'))
+        mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
 
-  tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
-  imprimir_mapa(mapa);
+    tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
+    imprimir_mapa(mapa);
+  }
 }
 
 /**
@@ -97,8 +99,8 @@ static void camino_corto(Mapa mapa) {
     if(moved) 
       any_moved = 1;
   }
-  if(any_moved && !tablahash_buscar(mapa->sensores,&mapa->robot)){ // Si se movio el sensor no fue utilizado en esa posicion, lo usa nuevamente
-    fprintf(stderr, "> ANY MOVED\n");
+  if(any_moved){ // Si se movio, usa el sensor nuevamente
+    fprintf(stderr, "SE MOVIO, USA SENSOR\n");
     usar_sensor(mapa); // Usa el sensor para actualizar el mapa
   }
 }
