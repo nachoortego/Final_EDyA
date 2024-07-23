@@ -1,4 +1,5 @@
 #include "tablahash.h"
+#include "glist.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -6,7 +7,7 @@
  * Casillas en la que almacenaremos los datos de la tabla hash.
  */
 typedef struct {
-  void *dato;
+  GList lista;
 } CasillaHash;
 
 /**
@@ -41,9 +42,9 @@ TablaHash tablahash_crear(unsigned capacidad, FuncionCopiadora copia,
   tabla->destr = destr;
   tabla->hash = hash;
 
-  // Inicializamos las casillas con datos nulos.
+  // Inicializamos las casillas con listas vacías.
   for (unsigned idx = 0; idx < capacidad; ++idx) {
-    tabla->elems[idx].dato = NULL;
+    tabla->elems[idx].lista = glist_crear();
   }
 
   return tabla;
@@ -64,10 +65,10 @@ int tablahash_capacidad(TablaHash tabla) { return tabla->capacidad; }
  */
 void tablahash_destruir(TablaHash tabla) {
 
-  // Destruir cada uno de los datos.
-  for (unsigned idx = 0; idx < tabla->capacidad; ++idx)
-    if (tabla->elems[idx].dato != NULL)
-      tabla->destr(tabla->elems[idx].dato);
+  // Destruir cada una de las listas en las casillas.
+  for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
+    glist_destruir(tabla->elems[idx].lista, tabla->destr);
+  }
 
   // Liberar el arreglo de casillas y la tabla.
   free(tabla->elems);
@@ -77,29 +78,26 @@ void tablahash_destruir(TablaHash tabla) {
 
 /**
  * Inserta un dato en la tabla, o lo reemplaza si ya se encontraba.
- * IMPORTANTE: La implementacion no maneja colisiones.
+ * Maneja colisiones usando listas.
  */
 void tablahash_insertar(TablaHash tabla, void *dato) {
 
   // Calculamos la posicion del dato dado, de acuerdo a la funcion hash.
   unsigned idx = tabla->hash(dato) % tabla->capacidad;
 
-  // Insertar el dato si la casilla estaba libre.
-  if (tabla->elems[idx].dato == NULL) {
-    tabla->numElems++;
-    tabla->elems[idx].dato = tabla->copia(dato);
-    return;
+  // Buscar el dato en la lista.
+  GList lista = tabla->elems[idx].lista;
+  for (GNode *node = lista; node != NULL; node = node->next) {
+    if (tabla->comp(node->data, dato) == 0) {
+      tabla->destr(node->data);
+      node->data = tabla->copia(dato);
+      return;
+    }
   }
-  // Sobrescribir el dato si el mismo ya se encontraba en la tabla.
-  else if (tabla->comp(tabla->elems[idx].dato, dato) == 0) {
-    tabla->destr(tabla->elems[idx].dato);
-    tabla->elems[idx].dato = tabla->copia(dato);
-    return;
-  }
-  // No hacer nada si hay colision.
-  else {
-    return;
-  }
+
+  // Si no se encontró, agregar al inicio de la lista.
+  tabla->elems[idx].lista = glist_agregar_inicio(tabla->elems[idx].lista, dato, tabla->copia);
+  tabla->numElems++;
 }
 
 /**
@@ -111,15 +109,15 @@ void *tablahash_buscar(TablaHash tabla, void *dato) {
   // Calculamos la posicion del dato dado, de acuerdo a la funcion hash.
   unsigned idx = tabla->hash(dato) % tabla->capacidad;
 
-  // Retornar NULL si la casilla estaba vacia.
-  if (tabla->elems[idx].dato == NULL)
-    return NULL;
-  // Retornar el dato de la casilla si hay concidencia.
-  else if (tabla->comp(tabla->elems[idx].dato, dato) == 0)
-    return tabla->elems[idx].dato;
-  // Retornar NULL en otro caso.
-  else
-    return NULL;
+  // Buscar el dato en la lista.
+  GList lista = tabla->elems[idx].lista;
+  for (GNode *node = lista; node != NULL; node = node->next) {
+    if (tabla->comp(node->data, dato) == 0) {
+      return node->data;
+    }
+  }
+
+  return NULL;
 }
 
 /**
@@ -130,14 +128,21 @@ void tablahash_eliminar(TablaHash tabla, void *dato) {
   // Calculamos la posicion del dato dado, de acuerdo a la funcion hash.
   unsigned idx = tabla->hash(dato) % tabla->capacidad;
 
-  // Retornar si la casilla estaba vacia.
-  if (tabla->elems[idx].dato == NULL)
-    return;
-  // Vaciar la casilla si hay coincidencia.
-  else if (tabla->comp(tabla->elems[idx].dato, dato) == 0) {
-    tabla->numElems--;
-    tabla->destr(tabla->elems[idx].dato);
-    tabla->elems[idx].dato = NULL;
-    return;
+  // Buscar y eliminar el dato en la lista.
+  GList lista = tabla->elems[idx].lista;
+  GNode *prev = NULL;
+  for (GNode *node = lista; node != NULL; node = node->next) {
+    if (tabla->comp(node->data, dato) == 0) {
+      if (prev == NULL) {
+        tabla->elems[idx].lista = node->next;
+      } else {
+        prev->next = node->next;
+      }
+      tabla->destr(node->data);
+      free(node);
+      tabla->numElems--;
+      return;
+    }
+    prev = node;
   }
 }
