@@ -48,3 +48,12 @@ _ _ _ _ . #
 
 El robot llego a su destino.       
 Operaciones realizadas: 6, Distancia recorrida: 10
+
+_ _ _ _ _ #
+_ # # _ # #
+_ _ # _ _ #
+_ _ _ # _ #
+_ # _ # _ R
+
+El robot llego a su destino.       
+Operaciones realizadas: 21, Distancia recorrida: 28
