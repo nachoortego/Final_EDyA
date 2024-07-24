@@ -4,100 +4,16 @@
 #include <string.h>
 #include <assert.h>
 
-#define LINE_SIZE 255
-
-/**
- * Toma como argumento el nombre de un archivo.
- * Devuelve un mapa con la informacion del archivo.
- * Devuelve NULL si el archivo no existe o no es válido.
- */
-Mapa mapa_crear(char filename[]) {
-  FILE* archivo = fopen(filename, "r");
-  if (archivo == NULL) 
-    return NULL; // Archivo no encontrado
-
+Mapa mapa_crear(Info info) {
   Mapa mapa = malloc(sizeof(_Mapa));
   assert(mapa != NULL);
-  mapa->N = 0;  // Inicializa N 
-  mapa->M = 0;  // Inicializa M
-  mapa->mat = NULL;  // Inicializa mat
-  mapa->camino = NULL;  // Inicializa camino
+  mapa->N = info->N;
+  mapa->M = info->M;
+  mapa->mat = info->mat;
 
-  // Leer dimensiones y puntos robot y objetivo (primero y, luego x) , tambien verificar lectura y validez de los datos
-  char buffer[100]; // Leer primera línea
-  if (fgets(buffer, sizeof(buffer), archivo) == NULL) {
-    free(mapa);
-    fclose(archivo);
-    return NULL;
-  }
-
-  // Analizar los dos primeros valores de la primera línea 
-  if (sscanf(buffer, "%d%d", &mapa->N, &mapa->M) != 2 || mapa->N <= 0 || mapa->M <= 0) {
-    free(mapa);
-    fclose(archivo);
-    return NULL;
-  }
-  // Segunda linea
-  if (fscanf(archivo, "%d%d", &mapa->robot.y, &mapa->robot.x) != 2 ||
-      mapa->robot.x < 0 || mapa->robot.x >= mapa->M || mapa->robot.y < 0 || mapa->robot.y >= mapa->N) {
-    free(mapa);
-    fclose(archivo);
-    return NULL;
-  }
-  // Tercera linea
-  if (fscanf(archivo, "%d%d", &mapa->objetivo.y, &mapa->objetivo.x) != 2 ||
-      mapa->objetivo.x < 0 || mapa->objetivo.x >= mapa->M || mapa->objetivo.y < 0 || mapa->objetivo.y >= mapa->N) {
-    free(mapa);
-    fclose(archivo);
-    return NULL;   
-  }
-
-  // Leer linea en blanco
-  char line[LINE_SIZE];
-  if (fgets(line, LINE_SIZE, archivo) == NULL) {
-    free(mapa);
-    fclose(archivo);
-    return NULL;
-  }
-
-  // Inicializar matriz
-  mapa->mat = malloc(sizeof(char*) * mapa->N);
-  assert(mapa->mat != NULL);
-  for (int i = 0; i < mapa->N; i++) {
-    mapa->mat[i] = malloc(sizeof(char) * (mapa->M + 1)); // +1 para el '\0'
-    assert(mapa->mat[i] != NULL);
-  }
-
-  // Verificar dimensiones del mapa y caracteres del mapa
-  for (int i = 0; i < mapa->N; i++) {
-    if (fgets(line, LINE_SIZE, archivo) == NULL || strlen(line) < mapa->M) {
-      destruir_mapa(mapa);
-      fclose(archivo);
-      return NULL; 
-    }
-
-    for (int j = 0; j < mapa->M; j++)
-      if (line[j] != '#' && line[j] != '.') {
-        destruir_mapa(mapa);
-        fclose(archivo);
-        return NULL;
-      }
-
-    strncpy(mapa->mat[i], line, mapa->M); // Copiar los datos
-    mapa->mat[i][mapa->M] = '\0'; // Asegurar la terminación de la cadena
-  }
-  mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Escribir el robot en la matriz
-  mapa->mat[mapa->objetivo.y][mapa->objetivo.x] = 'F'; // Escribir el objetivo en la matriz
-
-  mapa->camino = pila_crear(); // Inicializar la pila
-
-  fclose(archivo);
   return mapa;
 }
 
-/**
- * Imprime el mapa por la salida estándar.
- */
 void imprimir_mapa(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) {
     for (int j = 0; j < mapa->M; j++) {
@@ -117,20 +33,13 @@ void imprimir_mapa(Mapa mapa) {
   getchar(); // Espera a que se presione Enter antes de continuar
 }
 
-/**
- * Funcion que se pasa como parámetro a pila_destruir, no destruye el dato.
- */
 void no_destruir(void* dir) {}
 
-/**
- * Destruye el mapa y sus datos.
- */
 void destruir_mapa(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) { // Libera cada fila
     free(mapa->mat[i]);
   }
   free(mapa->mat); // Libera la matriz
-  pila_destruir(mapa->camino, no_destruir); // Libera la pila 
   free(mapa);
 }
 
