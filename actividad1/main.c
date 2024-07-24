@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
   destruir_info(info);
 
   imprimir_mapa(mapa);
+
   encontrar_camino(mapa, robot);
   
   destruir_mapa(mapa);

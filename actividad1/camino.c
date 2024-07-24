@@ -19,7 +19,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
       nuevoPunto = crear_punto(robot->pos.x - 1, robot->pos.y);
       if ((robot->pos.x - 1) >= 0 &&
           mapa->mat[robot->pos.y][robot->pos.x - 1] != '#' && // Comprueba limites del mapa y obstaculos
-          (ignorarRepetidos == 0 || tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
+          (ignorarRepetidos == 0 || !tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         
         mapa->mat[robot->pos.y][robot->pos.x] = '_'; // Marca la casilla como visitada
         /*! BORRAR: Marcar casilla como '_' */
@@ -33,13 +33,12 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         imprimir_mapa(mapa);
         return 1;
       }
-      break;
 
     case RIGHT:
       nuevoPunto = crear_punto(robot->pos.x + 1, robot->pos.y);
       if ((robot->pos.x + 1) < mapa->M &&
           mapa->mat[robot->pos.y][robot->pos.x + 1] != '#' && // Comprueba limites del mapa y obstaculos
-          (ignorarRepetidos == 0 || tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
+          (ignorarRepetidos == 0 || !tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         
         mapa->mat[robot->pos.y][robot->pos.x] = '_'; // Marca la casilla como visitada
         /*! BORRAR: Marcar casilla como '_' */
@@ -53,13 +52,12 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         imprimir_mapa(mapa);
         return 1;
       }
-      break;
 
     case UP:
       nuevoPunto = crear_punto(robot->pos.x, robot->pos.y - 1);
       if ((robot->pos.y - 1) >= 0 &&
           mapa->mat[robot->pos.y - 1][robot->pos.x] != '#' && // Comprueba limites del mapa y obstaculos
-          (ignorarRepetidos == 0 || tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
+          (ignorarRepetidos == 0 || !tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         
         mapa->mat[robot->pos.y][robot->pos.x] = '_'; // Marca la casilla como visitada
         /*! BORRAR: Marcar casilla como '_' */
@@ -73,13 +71,12 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         imprimir_mapa(mapa);
         return 1;
       }
-      break;
 
     case DOWN:
       nuevoPunto = crear_punto(robot->pos.x, robot->pos.y + 1);
       if ((robot->pos.y + 1) < mapa->N &&
           mapa->mat[robot->pos.y + 1][robot->pos.x] != '#' && // Comprueba limites del mapa y obstaculos
-          (ignorarRepetidos == 0 || tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
+          (ignorarRepetidos == 0 || !tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         
         mapa->mat[robot->pos.y][robot->pos.x] = '_'; // Marca la casilla como visitada
         /*! BORRAR: Marcar casilla como '_' */
@@ -93,7 +90,6 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         imprimir_mapa(mapa);
         return 1;
       }
-      break;
   }
   return 0; // En caso de no haberse movido
 }
@@ -141,6 +137,7 @@ int check_estado(Robot robot) {
 static void no_destruir(void* dir) {}
 
 int buscar_no_visitados(Mapa mapa, Robot robot) {
+  printf("BUSCAR NO VISITADOS \n");
   int priority = rand() % 2; // Eleccion aleatoria
   Direccion dirs[4];
 
