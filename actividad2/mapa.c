@@ -39,7 +39,7 @@ Mapa mapa_crear(int N, int M, int D, int i1, int j1, int i2, int j2) {
     mapa->mat[i] = malloc(sizeof(char) * (mapa->M + 1)); // +1 para el '\0'
     assert(mapa->mat[i] != NULL);
     for(int j = 0; j < mapa->M; j++) {
-      mapa->mat[i][j] = '#'; // Marca inicialmente toda casilla como ocupada
+      mapa->mat[i][j] = '?'; // Marca inicialmente toda casilla como ocupada
     }
   }
 
@@ -59,8 +59,9 @@ void imprimir_mapa(Mapa mapa) {
     for (int j = 0; j < mapa->M; j++) {
       if (mapa->mat[i][j] == '#') {
         fprintf(stderr,"\033[0;35m"); // Violeta para obstáculo
-      } 
-      else if (mapa->mat[i][j] == 'F') {
+      } else if (mapa->mat[i][j] == '?') {
+        fprintf(stderr,"\033[0;37m"); // Blanco para lugar no descubierto
+      } else if (mapa->mat[i][j] == 'F') {
         fprintf(stderr,"\033[0;32m"); // Verde para posición final
       } else {
         fprintf(stderr,"\033[0;31m"); // Default rojo para cualquier otro caso
@@ -135,7 +136,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
   switch (dir) {
     case LEFT:
       if ((mapa->robot.x - 1) >= 0 &&
-          mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#' && // Comprueba limites del mapa y obstaculos
+          mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#' && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '?' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.x--; 
@@ -152,7 +153,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
 
     case RIGHT:
       if ((mapa->robot.x + 1) < mapa->M &&
-          mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#' && // Comprueba limites del mapa y obstaculos
+          mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#' && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '?' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.x++; 
@@ -168,7 +169,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
 
     case UP:
       if ((mapa->robot.y - 1) >= 0 &&
-          mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#' && // Comprueba limites del mapa y obstaculos
+          mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#' && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '?' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.y--; 
@@ -185,7 +186,7 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
 
     case DOWN:
       if ((mapa->robot.y + 1) < mapa->N &&
-          mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#' && // Comprueba limites del mapa y obstaculos
+          mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#' && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '?' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.y++; 
