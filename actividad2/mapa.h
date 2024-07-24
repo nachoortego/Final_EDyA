@@ -22,6 +22,7 @@ typedef enum {
  * @param mat Matriz bidimensional que representa el mapa.
  * @param N Número de filas del mapa.
  * @param M Número de columnas del mapa.
+ * @param D Máxima distancia del sensor.
  * @param robot Punto que representa la ubicación del robot en el mapa.
  * @param objetivo Punto que representa el punto de llegada en el mapa.
  * @param pila Pila que guarda los movimientos del robot y se utiliza para backtracking.
@@ -32,6 +33,7 @@ typedef struct {
   char** mat;
   int N;
   int M;
+  int D;
   Punto robot;
   Punto objetivo;
   Pila pila;
@@ -46,13 +48,14 @@ typedef _Mapa* Mapa;
  * 
  * @param N Número de filas del mapa.
  * @param M Número de columnas del mapa.
+ * @param D Máxima distancia del sensor.
  * @param i1 Fila de la posición inicial del robot.
  * @param j1 Columna de la posición inicial del robot.
  * @param i2 Fila de la posición del objetivo.
  * @param j2 Columna de la posición del objetivo.
  * @return Un puntero al nuevo mapa creado.
  */
-Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2);
+Mapa mapa_crear(int N, int M, int D, int i1, int j1, int i2, int j2);
 
 /**
  * Imprime el mapa por la salida estándar.
