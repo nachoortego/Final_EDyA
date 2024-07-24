@@ -6,23 +6,6 @@
 #include <time.h>
 #include "mapa.h"
 
-static void imprimir_direccion(void *dato) {
-  Direccion dir = (Direccion)(intptr_t)dato; // Cast explícito
-  switch (dir) {
-    case LEFT:
-      printf("L");
-      break;
-    case RIGHT:
-      printf("R");
-      break;
-    case UP:
-      printf("U");
-      break;
-    case DOWN:
-      printf("D");
-      break;
-  }
-}
 
 /**
  * Acerca al robot lo más posible al objetivo, hasta chocarse obstaculos que se lo impidan.

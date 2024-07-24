@@ -34,9 +34,8 @@ typedef enum {
 } Direccion;
 
 /**
- * Toma como argumento el nombre de un archivo.
- * Devuelve un mapa con la informacion del archivo.
- * Devuelve NULL si el archivo no existe o no es válido.
+ * Toma como argumento un dato de tipo Info.
+ * Devuelve un dato de tipo Robot con la informacion del archivo.
  */
 Robot robot_crear(Info);
 
@@ -49,5 +48,10 @@ void destruir_robot(Robot);
  * Toma una direccion y devuelve su opuesta, utilizado para backtracking
  */
 Direccion reverse(Direccion);
+
+/**
+ * ! BORRAR: Funcion auxiliar para imprimir la direccion
+ */
+void imprimir_direccion(void *dato);
 
 #endif /* __ROBOT_H__ */

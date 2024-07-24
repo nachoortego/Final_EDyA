@@ -1,7 +1,6 @@
 #ifndef __MAPA_H__
 #define __MAPA_H__
 
-#include "pila.h"
 #include "info.h"
 
 /**
