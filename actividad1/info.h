@@ -23,6 +23,6 @@ Info info_crear(char filename[]);
 /**
  * Destruye la estructura info y todos sus datos.
  */
-void info_destruir(Info);
+void destruir_info(Info);
 
 #endif /* __INFO_H__ */

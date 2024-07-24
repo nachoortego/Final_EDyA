@@ -1,6 +1,8 @@
 #include "camino.h"
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <time.h>
 
 /**
  * Funcion local que toma pila_apilar como argumento. 
@@ -11,9 +13,10 @@ static void* no_copiar(void* dato) {
 }
 
 int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
+  Punto nuevoPunto;
   switch (dir) {
     case LEFT:
-      Punto nuevoPunto = crear_punto(robot->pos.x - 1, robot->pos.y);
+      nuevoPunto = crear_punto(robot->pos.x - 1, robot->pos.y);
       if ((robot->pos.x - 1) >= 0 &&
           mapa->mat[robot->pos.y][robot->pos.x - 1] != '#' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
@@ -21,7 +24,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         mapa->mat[robot->pos.y][robot->pos.x] = '_'; // Marca la casilla como visitada
         /*! BORRAR: Marcar casilla como '_' */
 
-        tabla_hash_insertar(robot->visitados, &(robot->pos)); // Inserta la casilla en la tabla de visitados
+        tablahash_insertar(robot->visitados, &(robot->pos)); // Inserta la casilla en la tabla de visitados
         robot->pos.x--; 
         mapa->mat[robot->pos.y][robot->pos.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
@@ -33,7 +36,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
       break;
 
     case RIGHT:
-      Punto nuevoPunto = crear_punto(robot->pos.x + 1, robot->pos.y);
+      nuevoPunto = crear_punto(robot->pos.x + 1, robot->pos.y);
       if ((robot->pos.x + 1) < mapa->M &&
           mapa->mat[robot->pos.y][robot->pos.x + 1] != '#' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
@@ -41,7 +44,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         mapa->mat[robot->pos.y][robot->pos.x] = '_'; // Marca la casilla como visitada
         /*! BORRAR: Marcar casilla como '_' */
 
-        tabla_hash_insertar(robot->visitados, &(robot->pos)); // Inserta la casilla en la tabla de visitados
+        tablahash_insertar(robot->visitados, &(robot->pos)); // Inserta la casilla en la tabla de visitados
         robot->pos.x++; 
         mapa->mat[robot->pos.y][robot->pos.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
@@ -53,7 +56,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
       break;
 
     case UP:
-      Punto nuevoPunto = crear_punto(robot->pos.x, robot->pos.y - 1);
+      nuevoPunto = crear_punto(robot->pos.x, robot->pos.y - 1);
       if ((robot->pos.y - 1) >= 0 &&
           mapa->mat[robot->pos.y - 1][robot->pos.x] != '#' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
@@ -61,7 +64,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         mapa->mat[robot->pos.y][robot->pos.x] = '_'; // Marca la casilla como visitada
         /*! BORRAR: Marcar casilla como '_' */
 
-        tabla_hash_insertar(robot->visitados, &(robot->pos)); // Inserta la casilla en la tabla de visitados
+        tablahash_insertar(robot->visitados, &(robot->pos)); // Inserta la casilla en la tabla de visitados
         robot->pos.y--; 
         mapa->mat[robot->pos.y][robot->pos.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
@@ -73,7 +76,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
       break;
 
     case DOWN:
-      Punto nuevoPunto = crear_punto(robot->pos.x, robot->pos.y + 1);
+      nuevoPunto = crear_punto(robot->pos.x, robot->pos.y + 1);
       if ((robot->pos.y + 1) < mapa->N &&
           mapa->mat[robot->pos.y + 1][robot->pos.x] != '#' && // Comprueba limites del mapa y obstaculos
           (ignorarRepetidos == 0 || tablahash_buscar(robot->visitados, &nuevoPunto))) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
@@ -81,7 +84,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         mapa->mat[robot->pos.y][robot->pos.x] = '_'; // Marca la casilla como visitada
         /*! BORRAR: Marcar casilla como '_' */
 
-        tabla_hash_insertar(robot->visitados, &(robot->pos)); // Inserta la casilla en la tabla de visitados
+        tablahash_insertar(robot->visitados, &(robot->pos)); // Inserta la casilla en la tabla de visitados
         robot->pos.y++; 
         mapa->mat[robot->pos.y][robot->pos.x] = 'R'; // Mueve el robot
         if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
@@ -95,7 +98,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
   return 0; // En caso de no haberse movido
 }
 
-static void camino_corto(Mapa mapa, Robot robot) {
+void camino_corto(Mapa mapa, Robot robot) {
   srand(time(NULL));
   int moved = 1;
   while (moved) {
@@ -128,7 +131,7 @@ static void camino_corto(Mapa mapa, Robot robot) {
   }
 }
 
-static int check_estado(Robot robot) {
+int check_estado(Robot robot) {
   return robot->pos.x == robot->obj.x && robot->pos.y == robot->obj.y;
 }
 
@@ -137,7 +140,7 @@ static int check_estado(Robot robot) {
  */
 static void no_destruir(void* dir) {}
 
-static int buscar_no_visitados(Mapa mapa, Robot robot) {
+int buscar_no_visitados(Mapa mapa, Robot robot) {
   int priority = rand() % 2; // Eleccion aleatoria
   Direccion dirs[4];
 
@@ -171,7 +174,7 @@ void encontrar_camino(Mapa mapa, Robot robot) {
     printf("Completado!\n");
   while(!check_estado(robot)) { // Mientras el robot no este en el objetivo
     camino_corto(mapa, robot); // Se acerca lo mas posible al objetivo
-    if(!check_estado(mapa)) {
+    if(!check_estado(robot)) {
       if(buscar_no_visitados(mapa, robot)) {} // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
         Direccion retroceder = reverse((Direccion)(intptr_t) pila_tope(robot->camino)); // Casteo explicito de void* a Direccion

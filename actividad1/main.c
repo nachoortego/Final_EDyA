@@ -1,5 +1,7 @@
 #include "camino.h"
 #include <stdlib.h>
+#include <stdio.h>
+
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -15,7 +17,7 @@ int main(int argc, char *argv[]) {
 
   Mapa mapa = mapa_crear(info);
   Robot robot = robot_crear(info);
-  info_destruir(info);
+  destruir_info(info);
 
   imprimir_mapa(mapa);
   encontrar_camino(mapa, robot);

@@ -21,19 +21,19 @@ int move(Mapa, Robot , Direccion, int);
  * 'priority' es una variable aleatoria que puede ser 1 o 0, y altera el eje en el que el robot se mueve.
  * De esta manera el robot no tiene peor caso, ya que su movimiento es aleatorio.
  */
-static void camino_corto(Mapa mapa, Robot robot);
+void camino_corto(Mapa mapa, Robot robot);
 
 /**
  * Comprueba si el robot llegó al objetivo. Devuelve 1 si lo logró, 0 si no.
  */
-static int check_estado(Robot robot);
+int check_estado(Robot robot);
 
 /**
  * Se mueve a una celda adyacente no visitada, independientemente de si se acerca o no al objetivo.
  * 'priority' es una variable aleatoria que puede ser 1 o 0, y altera el eje en el que el robot se mueve.
  * De esta manera el robot no tiene peor caso, ya que su movimiento es aleatorio.
  */
-static int buscar_no_visitados(Mapa mapa, Robot robot);
+int buscar_no_visitados(Mapa mapa, Robot robot);
 
 /**
  * Dado un mapa valido, encuentra un camino al objetivo e imprime cada movimiento del robot.

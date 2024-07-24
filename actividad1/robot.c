@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdint.h>
+#include <stdio.h>
 
 Robot robot_crear(Info info) {
   Robot robot = malloc(sizeof(_Robot));
