@@ -12,6 +12,15 @@ typedef struct {
 } Punto;
 
 /**
+ * Función para crear un punto.
+ * 
+ * @param x La coordenada x del punto.
+ * @param y La coordenada y del punto.
+ * @return Un punto con las coordenadas (x, y).
+ */
+Punto crear_punto(int x, int y);
+
+/**
  * Función hash para la estructura Punto.
  * 
  * @param punto Un puntero a la estructura Punto para la cual se calculará el valor hash.

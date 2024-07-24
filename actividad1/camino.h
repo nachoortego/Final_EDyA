@@ -13,6 +13,6 @@
  * En caso de que ignorarRepetidos sea 0, las casillas visitadas se consideran validas.
  * Devuelve 1 si fue posible el movimiento, 0 si no fue posible
  */
-int move(Mapa, Direccion, int);
+int move(Mapa, Robot , Direccion, int);
 
 #endif /* __CAMINO_H__ */
