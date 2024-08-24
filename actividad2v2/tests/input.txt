@@ -1,0 +1,50 @@
+5 6 3
+0 0
+4 5
+.....#
+.##.##
+..#..#
+...#.#
+.#.#..
+
+. . . . . #
+. # # . # #
+. . # . . #
+. . . # . #
+. # . # . .
+
+_ _ _ _ _ #
+. # # _ # #
+. # # _ _ #
+. # # # _ #
+# # # # _ R
+
+El robot llego a su destino.       
+Operaciones realizadas: 7, Distancia recorrida: 12
+
+_ _ _ _ _ #
+_ # # _ # #
+_ _ # _ _ #
+_ _ _ # _ #
+_ # _ # _ R
+
+El robot llego a su destino.       
+Operaciones realizadas: 21, Distancia recorrida: 28
+
+_ _ _ _ . #
+_ # # _ # #
+_ _ # _ _ #
+_ _ _ # _ #
+_ # _ # _ R
+
+El robot llego a su destino.       
+Operaciones realizadas: 19, Distancia recorrida: 26
+
+_ _ _ _ . #
+. # # _ # #
+. # # _ _ #
+. # # # _ #
+# # # # _ R
+
+El robot llego a su destino.       
+Operaciones realizadas: 6, Distancia recorrida: 10

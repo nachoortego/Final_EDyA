@@ -1,7 +1,7 @@
 #ifndef __MAPA_H__
 #define __MAPA_H__
 
-#include "pila.h"
+#include "cola.h"
 #include "array.h"
 #include "tablahash.h"
 #include "punto.h"
@@ -25,7 +25,7 @@ typedef enum {
  * @param D Máxima distancia del sensor.
  * @param robot Punto que representa la ubicación del robot en el mapa.
  * @param objetivo Punto que representa el punto de llegada en el mapa.
- * @param pila Pila que guarda los movimientos del robot y se utiliza para backtracking.
+ * @param cola ColaP utilizado para D*.
  * @param camino Arreglo que guarda los movimientos del robot para enviar al sensor.
  * @param sensores TablaHash que guarda los puntos donde el robot utilizó el sensor.
  */
@@ -36,7 +36,7 @@ typedef struct {
   int D;
   Punto robot;
   Punto objetivo;
-  Pila pila;
+  ColaP cola;
   Arreglo camino;
   TablaHash sensores;
 } _Mapa;

@@ -28,7 +28,7 @@ Mapa mapa_crear(int N, int M, int D, int i1, int j1, int i2, int j2) {
   mapa->robot.x = j1;  // Inicializa robot.x
   mapa->objetivo.y = i2;  // Inicializa objetivo.y
   mapa->objetivo.x = j2;  // Inicializa objetivo.x
-  mapa->pila = pila_crear(); // Inicializar la pila
+  mapa->cola = cola_crear(mapa->N * mapa->M); // Inicializar la cola
   mapa->camino = arreglo_crear(mapa->N * mapa->M); // Inicializar el arreglo camino
   mapa->sensores = tablahash_crear((mapa->N * mapa->M) / 2, copiar_punto, comparar_puntos, destruir_punto, hash_punto); // Inicializar la tabla de sensores
 
@@ -39,7 +39,7 @@ Mapa mapa_crear(int N, int M, int D, int i1, int j1, int i2, int j2) {
     mapa->mat[i] = malloc(sizeof(char) * (mapa->M + 1)); // +1 para el '\0'
     assert(mapa->mat[i] != NULL);
     for(int j = 0; j < mapa->M; j++) {
-      mapa->mat[i][j] = '?'; // Marca inicialmente toda casilla como ocupada
+      mapa->mat[i][j] = '.'; // Marca inicialmente toda casilla como vacia
     }
   }
 
@@ -94,20 +94,12 @@ void destruir_mapa(Mapa mapa) {
     free(mapa->mat[i]);
   }
   free(mapa->mat); // Libera la matriz
-  pila_destruir(mapa->pila, no_destruir_pila); // Libera la pila 
+  cola_destruir(mapa->cola); // Libera la cola 
   arreglo_destruir(mapa->camino, destruir_arrego); // Libera el Arreglo camino
   tablahash_destruir(mapa->sensores); // Libera la tabla de sensores
   free(mapa);
 }
 
-/**
- * Funcion local que toma pila_apilar como argumento. 
- * @param dato El dato a copiar.
- * @return No devuelve una copia fisica.
- */
-static void* no_copiar(void* dato) {
-  return dato; // Devuelve el mismo dato sin realizar una copia
-}
 
 /**
  * Funcion local que toma arreglo_escribir como argumento. 
@@ -141,8 +133,6 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.x--; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
-          mapa->pila = pila_apilar(mapa->pila, (void*)LEFT, no_copiar); // Apila el movimiento realizado
         
         movimiento = 'L';
         arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
@@ -158,8 +148,6 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.x++; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
-          mapa->pila = pila_apilar(mapa->pila, (void*)RIGHT, no_copiar ); // Apila el movimiento realizado
         
         movimiento = 'R';
         arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);        imprimir_mapa(mapa);
@@ -174,8 +162,6 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.y--; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
-          mapa->pila = pila_apilar(mapa->pila, (void*)UP, no_copiar); // Apila el movimiento realizado
         
         movimiento = 'U';
         arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
@@ -191,8 +177,6 @@ int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
         mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
         mapa->robot.y++; 
         mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        if(ignorarRepetidos) // Si no estoy haciendo backtracking, apilo
-          mapa->pila = pila_apilar(mapa->pila, (void*)DOWN, no_copiar); // Apila el movimiento realizado
         
         movimiento = 'D';
         arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
