@@ -14,7 +14,7 @@ static void swap(Punto* a, Punto* b) {
 static void heapifyUp(ColaP cp, int index) {
   int parent = (index - 1) / 2;
 
-  if (index > 0 && cp->data[index].x < cp->data[parent].x) {
+  if (index > 0 && cp->data[index].costo < cp->data[parent].costo) {
     swap(&cp->data[index], &cp->data[parent]);
     heapifyUp(cp, parent);
   }
@@ -26,11 +26,11 @@ static void heapifyDown(ColaP cp, int index) {
   int rightChild = 2 * index + 2;
   int smallest = index;
 
-  if (leftChild < cp->size && cp->data[leftChild].x < cp->data[smallest].x) {
+  if (leftChild < cp->size && cp->data[leftChild].costo < cp->data[smallest].costo) {
     smallest = leftChild;
   }
 
-  if (rightChild < cp->size && cp->data[rightChild].x < cp->data[smallest].x) {
+  if (rightChild < cp->size && cp->data[rightChild].costo < cp->data[smallest].costo) {
     smallest = rightChild;
   }
 

@@ -7,6 +7,7 @@ Punto crear_punto(int x, int y) {
   Punto p;
   p.x = x;
   p.y = y;
+  p.costo = 0;
   return p;
 }
 

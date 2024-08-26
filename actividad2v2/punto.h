@@ -9,6 +9,7 @@
  */
 typedef struct {
   int x, y;
+  int costo;
 } Punto;
 
 /**
