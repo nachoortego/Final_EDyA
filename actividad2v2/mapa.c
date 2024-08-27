@@ -129,21 +129,50 @@ int movimiento_valido(Mapa mapa, Punto nuevo) {
 }
 
 void mover_robot(Mapa mapa, Punto nuevo) {
-    fprintf(stderr, "> MOVER: (%d, %d) -> (%d, %d)\n", mapa->robot.x, mapa->robot.y, nuevo.x, nuevo.y);
-    // Guarda la dirección del movimiento para el registro
-    char movimiento;
+  fprintf(stderr, "> MOVER: (%d, %d) -> (%d, %d)\n", mapa->robot.x, mapa->robot.y, nuevo.x, nuevo.y);
+    static Direccion ultima_direccion = -1; // Variable estática para recordar la última dirección
+    Direccion direccion_actual;
+
+    // Determina la dirección del movimiento
     if (nuevo.x < mapa->robot.x) {
-        movimiento = 'L'; // Movimiento a la izquierda
+        direccion_actual = LEFT;
     } else if (nuevo.x > mapa->robot.x) {
-        movimiento = 'R'; // Movimiento a la derecha
+        direccion_actual = RIGHT;
     } else if (nuevo.y < mapa->robot.y) {
-        movimiento = 'U'; // Movimiento hacia arriba
+        direccion_actual = UP;
     } else if (nuevo.y > mapa->robot.y) {
-        movimiento = 'D'; // Movimiento hacia abajo
+        direccion_actual = DOWN;
+    } else {
+        return; // No hay movimiento
+    }
+
+    // Solo permite un movimiento en una dirección por llamada a la función
+    if (direccion_actual == ultima_direccion) {
+        return;
+    }
+
+    // Actualiza la última dirección
+    ultima_direccion = direccion_actual;
+
+    // Registra el movimiento
+    char movimiento;
+    switch (direccion_actual) {
+        case LEFT:
+            movimiento = 'L'; // Movimiento a la izquierda
+            break;
+        case RIGHT:
+            movimiento = 'R'; // Movimiento a la derecha
+            break;
+        case UP:
+            movimiento = 'U'; // Movimiento hacia arriba
+            break;
+        case DOWN:
+            movimiento = 'D'; // Movimiento hacia abajo
+            break;
     }
 
     // Actualiza la posición del robot
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la nueva posición del robot
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '.'; // Marca la antigua posición del robot
     mapa->robot.x = nuevo.x;
     mapa->robot.y = nuevo.y;
     mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Marca la nueva posición del robot
@@ -152,7 +181,6 @@ void mover_robot(Mapa mapa, Punto nuevo) {
     arreglo_escribir(mapa->camino, &movimiento, (FuncionCopia) copia_direccion);
     imprimir_mapa(mapa);
 }
-
 
 
 /**
