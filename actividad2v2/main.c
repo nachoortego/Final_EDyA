@@ -21,44 +21,52 @@ int usar_sensor(Mapa mapa) {
     fflush(stdout);
     scanf("%d%d%d%d", &d1, &d2, &d3, &d4);
     fprintf(stderr, "> SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
-    // int d_max = mapa->D;
-    // d_max = min(d1 - 1, d2 - 1, d3 - 1, d4 - 1, d_max - 1);
-    // // se inicializa en 0, si no tiene minimo, d_max queda igual
-    // // al comprobar en la tabla hash si uso el sensor, se fija si cuando lo uso tenia el mismo d_max
-    for(int i = 1; i < d1; i++){
-      if(mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F')
-        mapa->mat[mapa->robot.y - i][mapa->robot.x] = '.'; // Sensor hacia arriba
-    }
 
-    if(d1 <= mapa->D && (mapa->robot.y - d1) >= 0)
-      mapa->mat[mapa->robot.y - d1][mapa->robot.x] = '#'; // Marca la casilla final
+    int new_d;
+    if(mapa->D != (new_d = min_rayos(d1, d2, d3, d4, mapa->D)))
+      actualizar_sensores(mapa);
 
-    for(int i = 1; i < d2; i++)
-      if(mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F')
-        mapa->mat[mapa->robot.y + i][mapa->robot.x] = '.'; // Sensor hacia abajo
-
-    if(d2 <= mapa->D && (mapa->robot.y + d2) < mapa->N)
-      mapa->mat[mapa->robot.y + d2][mapa->robot.x] = '#'; // Marca la casilla final
-
-    for(int i = 1; i < d3; i++)
-      if(mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F')
-        mapa->mat[mapa->robot.y][mapa->robot.x - i] = '.'; // Sensor hacia la izquierda
-
-    if(d3 <= mapa->D && (mapa->robot.x - d3) >= 0)
-      mapa->mat[mapa->robot.y][mapa->robot.x - d3] = '#'; // Marca la casilla final
-
-    for(int i = 1; i < d4; i++)
-      if(mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F')
-        mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
-    
-    if(d4 <= mapa->D && (mapa->robot.x + d4) < mapa->M)
-      mapa->mat[mapa->robot.y][mapa->robot.x + d4] = '#'; // Marca la casilla final
+    lanzar_rayos(mapa, mapa->robot, d1, d2, d3, d4);
 
     tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
     imprimir_mapa(mapa);
     return 1;
   }
   return 0;
+}
+
+void lanzar_rayos(Mapa mapa, Punto origen, int d1, int d2, int d3, int d4) {
+  if(d1 <= mapa->D && (mapa->robot.y - d1) >= 0)
+    mapa->mat[mapa->robot.y - d1][mapa->robot.x] = '#'; // Marca la casilla final
+
+  if(d2 <= mapa->D && (mapa->robot.y + d2) < mapa->N)
+    mapa->mat[mapa->robot.y + d2][mapa->robot.x] = '#'; // Marca la casilla final
+
+  if(d3 <= mapa->D && (mapa->robot.x - d3) >= 0)
+    mapa->mat[mapa->robot.y][mapa->robot.x - d3] = '#'; // Marca la casilla final
+  
+  if(d4 <= mapa->D && (mapa->robot.x + d4) < mapa->M)
+    mapa->mat[mapa->robot.y][mapa->robot.x + d4] = '#'; // Marca la casilla final
+}
+
+int min_rayos(int d1, int d2, int d3, int d4, int d_max){
+  if(d1 == 0 && d2 == 0 && d3 == 0 && d4 == 0)
+    return d_max;
+  int min = d1;
+  if(d2 < min)
+    min = d2;
+  if(d3 < min)
+    min = d3;
+  if(d4 < min)
+    min = d4;
+
+  return min > d_max ? min : d_max;
+}
+
+int actualizar_sensores(Mapa mapa) {
+  for(int pos = 0; pos < (mapa->sensores); pos ++) {
+    lanzar_rayos(mapa, mapa->sensores->elems[pos], 0, 0, 0, 0);
+  }
 }
 
 static void imprimir_char(void* dato) {
@@ -180,6 +188,7 @@ int main() {
   scanf("%d%d", &i2, &j2);
 
   Mapa mapa = mapa_crear(N, M, D, i1, j1, i2, j2);
+  mapa->D = 1;
 
   // Ejemplo de cómo usarlo en tu algoritmo principal:
   int** gScore = (int**)malloc(mapa->N * sizeof(int*));
