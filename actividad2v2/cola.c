@@ -64,7 +64,7 @@ void cola_insertar(ColaP cp, Punto p) {
 // Función para extraer el elemento de mayor prioridad (mínimo)
 Punto cola_extraer_min(ColaP cp) {
   if (cp->size == 0) {
-    printf("Error: la cola de prioridad está vacía.\n");
+    fprintf(stderr,"Error: la cola de prioridad está vacía.\n");
     exit(EXIT_FAILURE);
   }
 

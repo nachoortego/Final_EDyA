@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "mapa.h"
 
+#define INT_MAX 2147483647
+
 /**
  * Usa el sensor para actualizar el mapa en la posición actual del robot.
  * 
@@ -56,6 +58,105 @@ int usar_sensor(Mapa mapa) {
   return 0;
 }
 
+// Arrays para mapeo de movimientos
+int dx[] = {0, 0, -1, 1};  // LEFT, RIGHT, UP, DOWN
+int dy[] = {-1, 1, 0, 0};  // LEFT, RIGHT, UP, DOWN
+
+int esMovimientoValido(Mapa mapa, Punto destino) {
+    return destino.x >= 0 && destino.x < mapa->N &&
+           destino.y >= 0 && destino.y < mapa->M &&
+           mapa->mat[destino.x][destino.y] != '#'; // Asumiendo que 'X' indica un obstáculo
+}
+
+int moverRobot(Mapa mapa, Punto destino) {
+    fprintf(stderr, "> MOVER: (%d, %d) -> (%d, %d)\n", mapa->robot.x, mapa->robot.y, destino.x, destino.y);
+    int deltaX = destino.x - mapa->robot.x;
+    int deltaY = destino.y - mapa->robot.y;
+
+    Direccion dir;
+    if (deltaX == 0 && deltaY < 0) {
+        dir = LEFT;
+    } else if (deltaX == 0 && deltaY > 0) {
+        dir = RIGHT;
+    } else if (deltaX < 0 && deltaY == 0) {
+        dir = UP;
+    } else if (deltaX > 0 && deltaY == 0) {
+        dir = DOWN;
+    } else {
+        return 0; // Movimiento no válido
+    }
+
+    Punto nuevoPunto;
+    nuevoPunto.x = mapa->robot.x + dx[dir];
+    nuevoPunto.y = mapa->robot.y + dy[dir];
+
+    if (esMovimientoValido(mapa, nuevoPunto)) {
+        mapa->robot = nuevoPunto;
+        return 1;
+    } else {
+        return 0; // Movimiento no válido
+    }
+}
+
+int calcularCosto(Mapa mapa, Punto punto) {
+    // Distancia Manhattan entre el punto actual y el objetivo
+    int distanciaManhattan = abs(punto.x - mapa->objetivo.x) + abs(punto.y - mapa->objetivo.y);
+    return distanciaManhattan;
+}
+
+void inmeddiate_planning(Mapa mapa) {
+    usar_sensor(mapa);
+    ColaP cola = mapa->cola;
+
+    int** gScore = (int**)malloc(mapa->N * sizeof(int*));
+    for (int i = 0; i < mapa->N; i++) {
+        gScore[i] = (int*)malloc(mapa->M * sizeof(int));
+        for (int j = 0; j < mapa->M; j++) {
+            gScore[i][j] = INT_MAX;
+        }
+    }
+    gScore[mapa->robot.x][mapa->robot.y] = 0;
+
+    Punto inicio = mapa->robot;
+    inicio.costo = calcularCosto(mapa, inicio);
+    cola_insertar(cola, inicio);
+
+    while (!cola_vacia(cola)) {
+        Punto actual = cola_extraer_min(cola);
+
+        if (actual.x == mapa->objetivo.x && actual.y == mapa->objetivo.y) {
+            // printf("Objetivo alcanzado en (%d, %d)\n", actual.x, actual.y);
+            return;
+        }
+
+        for (int dir = 0; dir < 4; dir++) {
+            Punto vecino;
+            vecino.x = actual.x + dx[dir];
+            vecino.y = actual.y + dy[dir];
+
+            if (!esMovimientoValido(mapa, vecino)) continue;
+
+            int tentative_gScore = gScore[actual.x][actual.y] + 1;
+
+            if (tentative_gScore < gScore[vecino.x][vecino.y]) {
+                gScore[vecino.x][vecino.y] = tentative_gScore;
+                vecino.costo = tentative_gScore + calcularCosto(mapa, vecino);
+                cola_insertar(cola, vecino);
+
+                moverRobot(mapa, vecino);
+            }
+        }
+    }
+
+    //printf("No se encontró un camino al objetivo.\n");
+
+    for (int i = 0; i < mapa->N; i++) {
+        free(gScore[i]);
+    }
+    free(gScore);
+}
+
+
 int main() {
   int N, M, D;
   scanf("%d%d%d", &N, &M, &D);
@@ -65,7 +166,8 @@ int main() {
   scanf("%d%d", &i2, &j2);
 
   Mapa mapa = mapa_crear(N, M, D, i1, j1, i2, j2);
-  usar_sensor(mapa);
+  inmeddiate_planning(mapa);
+  imprimir_mapa(mapa);
   destruir_mapa(mapa);
 
   return 0;
