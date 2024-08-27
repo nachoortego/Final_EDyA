@@ -112,81 +112,48 @@ static char* copia_direccion(char* dato) {
   return nuevoDato; // Devuelve el mismo dato sin realizar una copia
 }
 
-/**
- * Mueve el robot hacia la dirección indicada si es posible e imprime su carácter correspondiente.
- * Cada movimiento nuevo es agregado a la pila del mapa. 
- * Cada movimiento es agregado al arreglo camino.
- * En el caso de utilizar la pila para backtracking, no se apilan los movimientos.
- * 
- * @param mapa El mapa en el que se realiza el movimiento.
- * @param dir La dirección hacia la cual mover el robot.
- * @param ignorarRepetidos Indica si se deben considerar las casillas visitadas como válidas (0) o como obstáculos (1).
- * @return 1 si el movimiento fue posible, 0 si no fue posible.
- */
-int move(Mapa mapa, Direccion dir, int ignorarRepetidos) {
-  char movimiento;
-  switch (dir) {
-    case LEFT:
-      if ((mapa->robot.x - 1) >= 0 &&
-          mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '#' && mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '?' && // Comprueba limites del mapa y obstaculos
-          (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y][mapa->robot.x - 1] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
-        mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
-        mapa->robot.x--; 
-        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        
-        movimiento = 'L';
-        arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
-        imprimir_mapa(mapa);
-        return 1;
-      }
-      break;
 
-    case RIGHT:
-      if ((mapa->robot.x + 1) < mapa->M &&
-          mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '#' && mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '?' && // Comprueba limites del mapa y obstaculos
-          (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y][mapa->robot.x + 1] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
-        mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
-        mapa->robot.x++; 
-        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        
-        movimiento = 'R';
-        arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);        imprimir_mapa(mapa);
-        return 1;
-      }
-      break;
 
-    case UP:
-      if ((mapa->robot.y - 1) >= 0 &&
-          mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '#' && mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '?' && // Comprueba limites del mapa y obstaculos
-          (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y - 1][mapa->robot.x] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
-        mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
-        mapa->robot.y--; 
-        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        
-        movimiento = 'U';
-        arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
-        imprimir_mapa(mapa);
-        return 1;
-      }
-      break;
+int movimiento_valido(Mapa mapa, Punto nuevo) {
+    // Verifica que la nueva posición esté dentro de los límites del mapa
+    if (nuevo.x < 0 || nuevo.x >= mapa->M || nuevo.y < 0 || nuevo.y >= mapa->N) {
+        return 0; // Movimiento fuera de los límites del mapa
+    }
+    
+    // Verifica si la nueva posición es un obstáculo o una casilla desconocida
+    if (mapa->mat[nuevo.y][nuevo.x] == '#') {
+        return 0; // Movimiento a una casilla no válida
+    }
 
-    case DOWN:
-      if ((mapa->robot.y + 1) < mapa->N &&
-          mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '#' && mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '?' && // Comprueba limites del mapa y obstaculos
-          (ignorarRepetidos == 0 || mapa->mat[mapa->robot.y + 1][mapa->robot.x] != '_')) { // Si ignorarRepetidos es 1, no importa si la casilla fue visitada
-        mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la casilla como visitada
-        mapa->robot.y++; 
-        mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Mueve el robot
-        
-        movimiento = 'D';
-        arreglo_escribir(mapa->camino,&movimiento, (FuncionCopia) copia_direccion);
-        imprimir_mapa(mapa);
-        return 1;
-      }
-      break;
-  }
-  return 0; // En caso de no haberse movido
+    return 1; // Movimiento válido
 }
+
+void mover_robot(Mapa mapa, Punto nuevo) {
+    fprintf(stderr, "> MOVER: (%d, %d) -> (%d, %d)\n", mapa->robot.x, mapa->robot.y, nuevo.x, nuevo.y);
+    // Guarda la dirección del movimiento para el registro
+    char movimiento;
+    if (nuevo.x < mapa->robot.x) {
+        movimiento = 'L'; // Movimiento a la izquierda
+    } else if (nuevo.x > mapa->robot.x) {
+        movimiento = 'R'; // Movimiento a la derecha
+    } else if (nuevo.y < mapa->robot.y) {
+        movimiento = 'U'; // Movimiento hacia arriba
+    } else if (nuevo.y > mapa->robot.y) {
+        movimiento = 'D'; // Movimiento hacia abajo
+    }
+
+    // Actualiza la posición del robot
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la nueva posición del robot
+    mapa->robot.x = nuevo.x;
+    mapa->robot.y = nuevo.y;
+    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Marca la nueva posición del robot
+
+    // Registra el movimiento
+    arreglo_escribir(mapa->camino, &movimiento, (FuncionCopia) copia_direccion);
+    imprimir_mapa(mapa);
+}
+
+
 
 /**
  * Toma una dirección y devuelve su opuesta, utilizado para backtracking.

@@ -72,24 +72,15 @@ void imprimir_mapa(Mapa);
 void destruir_mapa(Mapa);
 
 /**
- * Mueve el robot hacia la dirección indicada si es posible e imprime su carácter correspondiente.
- * Cada movimiento nuevo es agregado a la pila del mapa. 
- * Cada movimiento es agregado al arreglo camino.
- * En el caso de utilizar la pila para backtracking, no se apilan los movimientos.
- * 
- * @param mapa El mapa en el que se realiza el movimiento.
- * @param dir La dirección hacia la cual mover el robot.
- * @param ignorarRepetidos Indica si se deben considerar las casillas visitadas como válidas (0) o como obstáculos (1).
- * @return 1 si el movimiento fue posible, 0 si no fue posible.
- */
-int move(Mapa, Direccion, int ignorarRepetidos);
-
-/**
  * Toma una dirección y devuelve su opuesta, utilizado para backtracking.
  * 
  * @param dir La dirección para la cual se desea obtener la opuesta.
  * @return La dirección opuesta a la proporcionada.
  */
 Direccion reverse(Direccion);
+
+void mover_robot(Mapa mapa, Punto dir);
+int movimiento_valido(Mapa mapa, Punto dir);
+
 
 #endif /* __MAPA_H__ */

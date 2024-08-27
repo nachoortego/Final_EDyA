@@ -136,7 +136,7 @@ void *tablahash_buscar(TablaHash tabla, void *dato) {
   GList lista = tabla->elems[idx].lista;
   for (GNode *node = lista; node != NULL; node = node->next) {
     if (tabla->comp(node->data, dato) == 0) {
-      fprintf(stderr, "> Sensor encontrado\n");
+      // fprintf(stderr, "> Sensor encontrado\n");
       return node->data;
     }
   }

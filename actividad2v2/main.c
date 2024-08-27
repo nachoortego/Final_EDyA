@@ -121,7 +121,9 @@ void inmeddiate_planning(Mapa mapa) {
     inicio.costo = calcularCosto(mapa, inicio);
     cola_insertar(cola, inicio);
 
+
     while (!cola_vacia(cola)) {
+        usar_sensor(mapa); // Actualiza el mapa con información del sensor
         Punto actual = cola_extraer_min(cola);
 
         if (actual.x == mapa->objetivo.x && actual.y == mapa->objetivo.y) {
@@ -134,7 +136,7 @@ void inmeddiate_planning(Mapa mapa) {
             vecino.x = actual.x + dx[dir];
             vecino.y = actual.y + dy[dir];
 
-            if (!esMovimientoValido(mapa, vecino)) continue;
+            if (!movimiento_valido(mapa, vecino)) continue;
 
             int tentative_gScore = gScore[actual.x][actual.y] + 1;
 
@@ -143,7 +145,7 @@ void inmeddiate_planning(Mapa mapa) {
                 vecino.costo = tentative_gScore + calcularCosto(mapa, vecino);
                 cola_insertar(cola, vecino);
 
-                moverRobot(mapa, vecino);
+                mover_robot(mapa, vecino);
             }
         }
     }
@@ -154,6 +156,23 @@ void inmeddiate_planning(Mapa mapa) {
         free(gScore[i]);
     }
     free(gScore);
+}
+
+static void imprimir_char(void* dato) {
+  char c = *(char*)dato;
+  printf("%c", c);
+}
+
+/**
+ * Envía el camino recorrido al sensor.
+ * 
+ * @param mapa El mapa que contiene el camino que se desea enviar.
+ */
+static void enviar_camino(Mapa mapa) {
+  printf("! ");
+  arreglo_recorrer(mapa->camino, imprimir_char);
+  printf("\n");
+  fflush(stdout);
 }
 
 
@@ -168,6 +187,7 @@ int main() {
   Mapa mapa = mapa_crear(N, M, D, i1, j1, i2, j2);
   inmeddiate_planning(mapa);
   imprimir_mapa(mapa);
+  enviar_camino(mapa);
   destruir_mapa(mapa);
 
   return 0;
