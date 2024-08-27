@@ -21,34 +21,37 @@ int usar_sensor(Mapa mapa) {
     fflush(stdout);
     scanf("%d%d%d%d", &d1, &d2, &d3, &d4);
     fprintf(stderr, "> SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
-
+    // int d_max = mapa->D;
+    // d_max = min(d1 - 1, d2 - 1, d3 - 1, d4 - 1, d_max - 1);
+    // // se inicializa en 0, si no tiene minimo, d_max queda igual
+    // // al comprobar en la tabla hash si uso el sensor, se fija si cuando lo uso tenia el mismo d_max
     for(int i = 1; i < d1; i++){
       if(mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F')
         mapa->mat[mapa->robot.y - i][mapa->robot.x] = '.'; // Sensor hacia arriba
     }
 
-    if((mapa->robot.y - d1) >= 0)
+    if(d1 <= mapa->D && (mapa->robot.y - d1) >= 0)
       mapa->mat[mapa->robot.y - d1][mapa->robot.x] = '#'; // Marca la casilla final
 
     for(int i = 1; i < d2; i++)
       if(mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F')
         mapa->mat[mapa->robot.y + i][mapa->robot.x] = '.'; // Sensor hacia abajo
 
-    if((mapa->robot.y + d2) < mapa->N)
+    if(d2 <= mapa->D && (mapa->robot.y + d2) < mapa->N)
       mapa->mat[mapa->robot.y + d2][mapa->robot.x] = '#'; // Marca la casilla final
 
     for(int i = 1; i < d3; i++)
       if(mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F')
         mapa->mat[mapa->robot.y][mapa->robot.x - i] = '.'; // Sensor hacia la izquierda
 
-    if((mapa->robot.x - d3) >= 0)
+    if(d3 <= mapa->D && (mapa->robot.x - d3) >= 0)
       mapa->mat[mapa->robot.y][mapa->robot.x - d3] = '#'; // Marca la casilla final
 
     for(int i = 1; i < d4; i++)
       if(mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F')
         mapa->mat[mapa->robot.y][mapa->robot.x + i] = '.'; // Sensor hacia la derecha
     
-    if((mapa->robot.x + d4) < mapa->M)
+    if(d4 <= mapa->D && (mapa->robot.x + d4) < mapa->M)
       mapa->mat[mapa->robot.y][mapa->robot.x + d4] = '#'; // Marca la casilla final
 
     tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
@@ -127,7 +130,7 @@ static void mostrar_g_score(Mapa mapa, int** gScore) {
 }
 
 void path_finding(Mapa mapa, int** gScore) {
-  int max_iteraciones = 40; // Limita las iteraciones para evitar loops infinitos
+  int max_iteraciones = 200; // Limita las iteraciones para evitar loops infinitos
   int iteracion_actual = 0;
 
   while (!(mapa->robot.x == mapa->objetivo.x && mapa->robot.y == mapa->objetivo.y) && iteracion_actual < max_iteraciones) {
@@ -157,10 +160,9 @@ void path_finding(Mapa mapa, int** gScore) {
     }
 
     if (movimiento_posible) {
-      mover_robot(mapa, mejor_vecino);
-      fprintf(stderr, "> Robot movido a %d %d\n", mejor_vecino.y, mejor_vecino.x);
+        mover_robot(mapa, mejor_vecino);
+        fprintf(stderr, "> Robot movido a %d %d\n", mejor_vecino.y, mejor_vecino.x);
     }
-
       iteracion_actual++;
   }
 
