@@ -112,63 +112,38 @@ static char* copia_direccion(char* dato) {
   return nuevoDato; // Devuelve el mismo dato sin realizar una copia
 }
 
-
-
-int movimiento_valido(Mapa mapa, Punto nuevo) {
+int movimiento_valido(Mapa mapa, Punto nuevo, int print) {
     // Verifica que la nueva posición esté dentro de los límites del mapa
     if (nuevo.x < 0 || nuevo.x >= mapa->M || nuevo.y < 0 || nuevo.y >= mapa->N) {
-        return 0; // Movimiento fuera de los límites del mapa
+      return 0; // Movimiento fuera de los límites del mapa
     }
     
     // Verifica si la nueva posición es un obstáculo o una casilla desconocida
     if (mapa->mat[nuevo.y][nuevo.x] == '#') {
-        return 0; // Movimiento a una casilla no válida
+      return 0; // Movimiento a una casilla no válida
     }
+
+    if(print) 
+      fprintf(stderr, "> (%d, %d) VALIDO \n", nuevo.x, nuevo.y);
 
     return 1; // Movimiento válido
 }
 
 void mover_robot(Mapa mapa, Punto nuevo) {
   fprintf(stderr, "> MOVER: (%d, %d) -> (%d, %d)\n", mapa->robot.x, mapa->robot.y, nuevo.x, nuevo.y);
-    static Direccion ultima_direccion = -1; // Variable estática para recordar la última dirección
-    Direccion direccion_actual;
 
     // Determina la dirección del movimiento
-    if (nuevo.x < mapa->robot.x) {
-        direccion_actual = LEFT;
-    } else if (nuevo.x > mapa->robot.x) {
-        direccion_actual = RIGHT;
-    } else if (nuevo.y < mapa->robot.y) {
-        direccion_actual = UP;
-    } else if (nuevo.y > mapa->robot.y) {
-        direccion_actual = DOWN;
+    char movimiento;
+    if (nuevo.x + 1 == mapa->robot.x) {
+        movimiento = 'L'; // Movimiento a la izquierda
+    } else if (nuevo.x - 1 == mapa->robot.x) {
+        movimiento = 'R'; // Movimiento a la derecha
+    } else if (nuevo.y + 1 == mapa->robot.y) {
+        movimiento = 'U'; // Movimiento hacia arriba
+    } else if (nuevo.y - 1 == mapa->robot.y) {
+        movimiento = 'D'; // Movimiento hacia abajo
     } else {
         return; // No hay movimiento
-    }
-
-    // Solo permite un movimiento en una dirección por llamada a la función
-    if (direccion_actual == ultima_direccion) {
-        return;
-    }
-
-    // Actualiza la última dirección
-    ultima_direccion = direccion_actual;
-
-    // Registra el movimiento
-    char movimiento;
-    switch (direccion_actual) {
-        case LEFT:
-            movimiento = 'L'; // Movimiento a la izquierda
-            break;
-        case RIGHT:
-            movimiento = 'R'; // Movimiento a la derecha
-            break;
-        case UP:
-            movimiento = 'U'; // Movimiento hacia arriba
-            break;
-        case DOWN:
-            movimiento = 'D'; // Movimiento hacia abajo
-            break;
     }
 
     // Actualiza la posición del robot

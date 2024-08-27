@@ -80,7 +80,7 @@ void destruir_mapa(Mapa);
 Direccion reverse(Direccion);
 
 void mover_robot(Mapa mapa, Punto dir);
-int movimiento_valido(Mapa mapa, Punto dir);
+int movimiento_valido(Mapa mapa, Punto dir, int print);
 
 
 #endif /* __MAPA_H__ */

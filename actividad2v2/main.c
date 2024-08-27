@@ -79,12 +79,6 @@ static void enviar_camino(Mapa mapa) {
 int dx[] = {0, 0, -1, 1};  // LEFT, RIGHT, UP, DOWN
 int dy[] = {-1, 1, 0, 0};  // LEFT, RIGHT, UP, DOWN
 
-int calcularCosto(Mapa mapa, Punto punto) {
-  // Distancia Manhattan entre el punto actual y el objetivo
-  int distanciaManhattan = abs(punto.x - mapa->objetivo.x) + abs(punto.y - mapa->objetivo.y);
-  return distanciaManhattan;
-}
-
 void generar_g_score_optimista(Mapa mapa, int** gScore) {
   // Inicializa gScore con un valor alto (infinito)
   for (int i = 0; i < mapa->N; i++) {
@@ -109,18 +103,13 @@ void generar_g_score_optimista(Mapa mapa, int** gScore) {
       vecino.x = actual.x + dx[dir];
       vecino.y = actual.y + dy[dir];
 
-      // Verificar que el vecino esté dentro del mapa
-      if (vecino.x < 0 || vecino.x >= mapa->M || vecino.y < 0 || vecino.y >= mapa->N) continue;
+      if(movimiento_valido(mapa, vecino, 0)) {
+        int tentative_gScore = gScore[actual.y][actual.x] + 1;
 
-      // Evitar recalcular para celdas con obstáculos conocidos
-      if (mapa->mat[vecino.y][vecino.x] == '#') continue;
-
-      int tentative_gScore = gScore[actual.y][actual.x] + 1;
-
-      if (tentative_gScore < gScore[vecino.y][vecino.x]) {
-        gScore[vecino.y][vecino.x] = tentative_gScore;
-        vecino.costo = tentative_gScore;
-        cola_insertar(cola, vecino);
+        if (tentative_gScore < gScore[vecino.y][vecino.x]) {
+          gScore[vecino.y][vecino.x] = tentative_gScore;
+          cola_insertar(cola, vecino);
+        }
       }
     }
   }
@@ -137,6 +126,48 @@ static void mostrar_g_score(Mapa mapa, int** gScore) {
   }
 }
 
+void path_finding(Mapa mapa, int** gScore) {
+  int max_iteraciones = 40; // Limita las iteraciones para evitar loops infinitos
+  int iteracion_actual = 0;
+
+  while (!(mapa->robot.x == mapa->objetivo.x && mapa->robot.y == mapa->objetivo.y) && iteracion_actual < max_iteraciones) {
+    usar_sensor(mapa);
+    generar_g_score_optimista(mapa, gScore);
+    mostrar_g_score(mapa, gScore);
+
+    Punto mejor_vecino;
+    int mejor_gScore = INT_MAX;
+    int movimiento_posible = 0;
+
+    for (int dir = 0; dir < 4; dir++) {
+      Punto vecino;
+      vecino.x = mapa->robot.x + dx[dir];
+      vecino.y = mapa->robot.y + dy[dir];
+
+      if (movimiento_valido(mapa, vecino, 1)) {
+        int gScore_vecino = gScore[vecino.y][vecino.x];
+        fprintf(stderr, "> gScore de %d %d: %d\n", vecino.y, vecino.x, gScore_vecino);
+
+        if (gScore_vecino < mejor_gScore) {
+          mejor_gScore = gScore_vecino;
+          mejor_vecino = vecino;
+          movimiento_posible = 1; // Indica que hay un movimiento posible
+        }
+      }
+    }
+
+    if (movimiento_posible) {
+      mover_robot(mapa, mejor_vecino);
+      fprintf(stderr, "> Robot movido a %d %d\n", mejor_vecino.y, mejor_vecino.x);
+    }
+
+      iteracion_actual++;
+  }
+
+  if (iteracion_actual >= max_iteraciones) {
+    fprintf(stderr, "Límite de iteraciones alcanzado, puede que el robot esté estancado.\n");
+  }
+}
 
 int main() {
   int N, M, D;
@@ -147,27 +178,18 @@ int main() {
   scanf("%d%d", &i2, &j2);
 
   Mapa mapa = mapa_crear(N, M, D, i1, j1, i2, j2);
-  // inmeddiate_planning(mapa);
 
   // Ejemplo de cómo usarlo en tu algoritmo principal:
   int** gScore = (int**)malloc(mapa->N * sizeof(int*));
   for (int i = 0; i < mapa->N; i++) {
-      gScore[i] = (int*)malloc(mapa->M * sizeof(int));
+    gScore[i] = (int*)malloc(mapa->M * sizeof(int));
   }
 
-  generar_g_score_optimista(mapa, gScore);
-
+  path_finding(mapa, gScore);
   mostrar_g_score(mapa, gScore);
-
-  usar_sensor(mapa);
-
-  generar_g_score_optimista(mapa, gScore);
-
-  mostrar_g_score(mapa, gScore);
-
 
   for (int i = 0; i < mapa->N; i++) {
-      free(gScore[i]);
+    free(gScore[i]);
   }
   free(gScore);
 

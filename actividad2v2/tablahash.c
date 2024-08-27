@@ -115,7 +115,7 @@ void tablahash_insertar(TablaHash tabla, void *dato) {
 
   // Si no se encontró, agregar al inicio de la lista.
   tabla->elems[idx].lista = glist_agregar_inicio(tabla->elems[idx].lista, dato, tabla->copia);
-  fprintf(stderr, "> Sensor agregado\n");
+  // fprintf(stderr, "> Sensor agregado\n");
   tabla->numElems++;
 }
 
@@ -140,7 +140,7 @@ void *tablahash_buscar(TablaHash tabla, void *dato) {
       return node->data;
     }
   }
-  fprintf(stderr, "> Sensor no encontrado\n");
+  // fprintf(stderr, "> Sensor no encontrado\n");
   return NULL;
 }
 
