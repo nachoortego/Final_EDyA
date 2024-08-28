@@ -147,7 +147,7 @@ void mover_robot(Mapa mapa, Punto nuevo) {
     }
 
     // Actualiza la posición del robot
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '.'; // Marca la antigua posición del robot
+    mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la antigua posición del robot
     mapa->robot.x = nuevo.x;
     mapa->robot.y = nuevo.y;
     mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Marca la nueva posición del robot
