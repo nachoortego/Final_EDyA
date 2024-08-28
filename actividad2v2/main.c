@@ -101,17 +101,20 @@ static void enviar_camino(Mapa mapa) {
 int dx[] = {0, 0, -1, 1};  // LEFT, RIGHT, UP, DOWN
 int dy[] = {-1, 1, 0, 0};  // LEFT, RIGHT, UP, DOWN
 
-void generar_g_score_optimista(Mapa mapa, int** gScore) {
+void generar_g_score_optimista(Mapa mapa) {
   // Inicializa gScore con un valor alto (infinito)
+  fprintf(stderr, "> GENERAR G SCORE\n");
+  
   for (int i = 0; i < mapa->N; i++) {
     for (int j = 0; j < mapa->M; j++) {
-      gScore[i][j] = INT_MAX;
+      mapa->gScore[i][j] = INT_MAX;
     }
   }
 
+
   // El gScore del objetivo es 0, ya que es el punto de partida para el cálculo
   Punto objetivo = mapa->objetivo;
-  gScore[objetivo.y][objetivo.x] = 0;
+  mapa->gScore[objetivo.y][objetivo.x] = 0;
 
   // Cola de prioridad para explorar los puntos desde el objetivo
   ColaP cola = cola_crear(1000);
@@ -131,10 +134,10 @@ void generar_g_score_optimista(Mapa mapa, int** gScore) {
       vecino.y = actual.y + dy[dir];
 
       if (movimiento_valido(mapa, vecino, 0)) {
-        int tentative_gScore = gScore[actual.y][actual.x] + 1;
+        int tentative_gScore = mapa->gScore[actual.y][actual.x] + 1;
 
-        if (tentative_gScore < gScore[vecino.y][vecino.x]) {
-          gScore[vecino.y][vecino.x] = tentative_gScore;
+        if (tentative_gScore < mapa->gScore[vecino.y][vecino.x]) {
+          mapa->gScore[vecino.y][vecino.x] = tentative_gScore;
           cola_insertar(cola, vecino);
         }
       }
@@ -144,10 +147,10 @@ void generar_g_score_optimista(Mapa mapa, int** gScore) {
   cola_destruir(cola);  // Destruir la cola después de usarla
 }
 
-static void mostrar_g_score(Mapa mapa, int** gScore) {
+static void mostrar_g_score(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) {
     for (int j = 0; j < mapa->M; j++) {
-      fprintf(stderr, "%d ", gScore[i][j]);
+      fprintf(stderr, "%d ", mapa->gScore[i][j]);
     }
     fprintf(stderr, "\n");
   }
@@ -162,10 +165,10 @@ static int robot_ha_llegado(Mapa mapa) {
   return mapa->robot.x == mapa->objetivo.x && mapa->robot.y == mapa->objetivo.y;
 }
 
-void path_finding(Mapa mapa, int** gScore) {
+void path_finding(Mapa mapa) {
   usar_sensor(mapa);
-  generar_g_score_optimista(mapa, gScore);
-  mostrar_g_score(mapa, gScore);
+  generar_g_score_optimista(mapa);
+  mostrar_g_score(mapa);
   imprimir_mapa(mapa); 
 
   while (!robot_ha_llegado(mapa)) {
@@ -179,7 +182,7 @@ void path_finding(Mapa mapa, int** gScore) {
       vecino.y = mapa->robot.y + dy[dir];
 
       if (movimiento_valido(mapa, vecino, 1)) {
-        int gScore_vecino = gScore[vecino.y][vecino.x];
+        int gScore_vecino = mapa->gScore[vecino.y][vecino.x];
         fprintf(stderr, "> gScore de %d %d: %d\n", vecino.y, vecino.x, gScore_vecino);
 
         if (gScore_vecino <= mejor_gScore) {
@@ -195,13 +198,13 @@ void path_finding(Mapa mapa, int** gScore) {
     if (movimiento_posible) {
       if (vecino_desconocido(mapa, mejor_vecino)) {
         usar_sensor(mapa);
-        generar_g_score_optimista(mapa, gScore);
+        generar_g_score_optimista(mapa);
         if (!movimiento_valido(mapa, mejor_vecino, 0)) {
           fprintf(stderr, "> Vecino no válido \n");
           continue;
         }
       }
-      mostrar_g_score(mapa, gScore);
+      mostrar_g_score(mapa);
       mover_robot(mapa, mejor_vecino);
       fprintf(stderr, "> Robot movido a %d %d\n", mejor_vecino.y, mejor_vecino.x);
     }
@@ -219,19 +222,8 @@ int main() {
   Mapa mapa = mapa_crear(N, M, D, i1, j1, i2, j2);
   mapa->D = 1;
 
-  // Ejemplo de cómo usarlo en tu algoritmo principal:
-  int** gScore = (int**)malloc(mapa->N * sizeof(int*));
-  for (int i = 0; i < mapa->N; i++) {
-    gScore[i] = (int*)malloc(mapa->M * sizeof(int));
-  }
-
-  path_finding(mapa, gScore);
-  mostrar_g_score(mapa, gScore);
-
-  for (int i = 0; i < mapa->N; i++) {
-    free(gScore[i]);
-  }
-  free(gScore);
+  path_finding(mapa);
+  mostrar_g_score(mapa);
 
   imprimir_mapa(mapa);
   enviar_camino(mapa);

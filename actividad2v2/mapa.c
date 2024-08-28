@@ -35,9 +35,18 @@ Mapa mapa_crear(int N, int M, int D, int i1, int j1, int i2, int j2) {
   // Inicializar matriz
   mapa->mat = malloc(sizeof(char*) * mapa->N);
   assert(mapa->mat != NULL);
+
+  // Inicializar Gscore
+  mapa->gScore = (int**)malloc(mapa->N * sizeof(int*));
+  assert(mapa->gScore != NULL);
+
   for (int i = 0; i < mapa->N; i++) {
     mapa->mat[i] = malloc(sizeof(char) * (mapa->M + 1)); // +1 para el '\0'
     assert(mapa->mat[i] != NULL);
+
+    mapa->gScore[i] = (int*)malloc(mapa->M * sizeof(int));
+    assert(mapa->gScore[i] != NULL);
+
     for(int j = 0; j < mapa->M; j++) {
       mapa->mat[i][j] = '.'; // Marca inicialmente toda casilla como vacia
     }
@@ -92,8 +101,11 @@ void destruir_arrego(void* dato) { free(dato); }
 void destruir_mapa(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) { // Libera cada fila
     free(mapa->mat[i]);
+    free(mapa->gScore[i]);
   }
+
   free(mapa->mat); // Libera la matriz
+  free(mapa->gScore); // Libera gScore
   cola_destruir(mapa->cola); // Libera la cola 
   arreglo_destruir(mapa->camino, destruir_arrego); // Libera el Arreglo camino
   tablahash_destruir(mapa->sensores); // Libera la tabla de sensores

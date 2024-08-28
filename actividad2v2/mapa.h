@@ -30,10 +30,11 @@ typedef enum {
  * @param sensores TablaHash que guarda los puntos donde el robot utilizó el sensor.
  */
 typedef struct {
-  char** mat;
   int N;
   int M;
   int D;
+  char** mat;
+  int** gScore;
   Punto robot;
   Punto objetivo;
   ColaP cola;
