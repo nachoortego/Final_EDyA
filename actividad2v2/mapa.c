@@ -164,7 +164,6 @@ void mover_robot(Mapa mapa, Punto nuevo) {
 
   // Registra el movimiento
   arreglo_escribir(mapa->camino, &movimiento, (FuncionCopia) copia_direccion);
-  imprimir_mapa(mapa);
 }
 
 

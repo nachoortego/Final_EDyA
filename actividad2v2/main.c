@@ -5,35 +5,47 @@
 
 #define INT_MAX 99 //2147483647
 
-void lanzar_rayos(Mapa mapa, Punto origen, int d1, int d2, int d3, int d4) {
+int lanzar_rayos(Mapa mapa, Punto origen, int d1, int d2, int d3, int d4) {
+  int muro_detectado = 0;
+
   for(int i = 1; i < d1; i++){
     if(mapa->mat[mapa->robot.y - i][mapa->robot.x] != 'F')
       mapa->mat[mapa->robot.y - i][mapa->robot.x] = '_'; // Sensor hacia arriba
   }
 
-  if(d1 <= mapa->D && (mapa->robot.y - d1) >= 0)
+  if(d1 <= mapa->D && (mapa->robot.y - d1) >= 0) {
     mapa->mat[mapa->robot.y - d1][mapa->robot.x] = '#'; // Marca la casilla final
+    muro_detectado = 1;
+  }
 
   for(int i = 1; i < d2; i++)
     if(mapa->mat[mapa->robot.y + i][mapa->robot.x] != 'F')
       mapa->mat[mapa->robot.y + i][mapa->robot.x] = '_'; // Sensor hacia abajo
 
-  if(d2 <= mapa->D && (mapa->robot.y + d2) < mapa->N)
+  if(d2 <= mapa->D && (mapa->robot.y + d2) < mapa->N) {
     mapa->mat[mapa->robot.y + d2][mapa->robot.x] = '#'; // Marca la casilla final
+    muro_detectado = 1;
+  }
 
   for(int i = 1; i < d3; i++)
     if(mapa->mat[mapa->robot.y][mapa->robot.x - i] != 'F')
       mapa->mat[mapa->robot.y][mapa->robot.x - i] = '_'; // Sensor hacia la izquierda
 
-  if(d3 <= mapa->D && (mapa->robot.x - d3) >= 0)
+  if(d3 <= mapa->D && (mapa->robot.x - d3) >= 0) {
     mapa->mat[mapa->robot.y][mapa->robot.x - d3] = '#'; // Marca la casilla final
+    muro_detectado = 1;
+  }
 
   for(int i = 1; i < d4; i++)
     if(mapa->mat[mapa->robot.y][mapa->robot.x + i] != 'F')
       mapa->mat[mapa->robot.y][mapa->robot.x + i] = '_'; // Sensor hacia la derecha
   
-  if(d4 <= mapa->D && (mapa->robot.x + d4) < mapa->M)
+  if(d4 <= mapa->D && (mapa->robot.x + d4) < mapa->M) {
     mapa->mat[mapa->robot.y][mapa->robot.x + d4] = '#'; // Marca la casilla final
+    muro_detectado = 1;
+  }
+
+  return muro_detectado;
 }
 
 int max_rayos(int d1, int d2, int d3, int d4, int d_max){
@@ -60,6 +72,8 @@ int max_rayos(int d1, int d2, int d3, int d4, int d_max){
  */
 int usar_sensor(Mapa mapa) {
   int d1, d2, d3, d4;
+  int muro_detectado = 0;
+
   printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
   fflush(stdout);
   scanf("%d%d%d%d", &d1, &d2, &d3, &d4);
@@ -68,10 +82,11 @@ int usar_sensor(Mapa mapa) {
   mapa->D = max_rayos(d1, d2, d3, d4, mapa->D);
   fprintf(stderr, "> MAX_D: %d\n", mapa->D);
 
-  lanzar_rayos(mapa, mapa->robot, d1, d2, d3, d4);
+  muro_detectado = lanzar_rayos(mapa, mapa->robot, d1, d2, d3, d4);
 
   imprimir_mapa(mapa);
-  return 1;
+
+  return muro_detectado;
 }
 
 static void imprimir_char(void* dato) {
@@ -169,6 +184,7 @@ void path_finding(Mapa mapa) {
     Punto mejor_vecino;
     int mejor_gScore = INT_MAX;
     int movimiento_posible = 0;
+    int muro_detectado = 0;
 
     for (int dir = 0; dir < 4; dir++) {
       Punto vecino;
@@ -191,14 +207,16 @@ void path_finding(Mapa mapa) {
 
     if (movimiento_posible) {
       if (vecino_desconocido(mapa, mejor_vecino)) {
-        usar_sensor(mapa);
-        generar_g_score_optimista(mapa);
+        muro_detectado = usar_sensor(mapa);
+        if(muro_detectado) {
+          generar_g_score_optimista(mapa);
+          mostrar_g_score(mapa);
+        }
         if (!movimiento_valido(mapa, mejor_vecino, 0)) {
           fprintf(stderr, "> Vecino no válido \n");
           continue;
         }
       }
-      mostrar_g_score(mapa);
       mover_robot(mapa, mejor_vecino);
       fprintf(stderr, "> Robot movido a %d %d\n", mejor_vecino.y, mejor_vecino.x);
     }
