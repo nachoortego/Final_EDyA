@@ -72,7 +72,7 @@ int usar_sensor(Mapa mapa) {
     lanzar_rayos(mapa, mapa->robot, d1, d2, d3, d4);
 
     tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
-    imprimir_mapa(mapa);
+    // imprimir_mapa(mapa);
     return 1;
   }
   return 0;
@@ -118,12 +118,17 @@ void generar_g_score_optimista(Mapa mapa, int** gScore) {
   while (!cola_vacia(cola)) {
     Punto actual = cola_extraer_min(cola);
 
+    // Si ya hemos alcanzado la posición del robot, podemos detenernos
+    if (actual.x == mapa->robot.x && actual.y == mapa->robot.y) {
+      break; // Detenemos el algoritmo ya que encontramos el camino al robot
+    }
+
     for (int dir = 0; dir < 4; dir++) {
       Punto vecino;
       vecino.x = actual.x + dx[dir];
       vecino.y = actual.y + dy[dir];
 
-      if(movimiento_valido(mapa, vecino, 0)) {
+      if (movimiento_valido(mapa, vecino, 0)) {
         int tentative_gScore = gScore[actual.y][actual.x] + 1;
 
         if (tentative_gScore < gScore[vecino.y][vecino.x]) {
@@ -153,8 +158,8 @@ void path_finding(Mapa mapa, int** gScore) {
   while (!(mapa->robot.x == mapa->objetivo.x && mapa->robot.y == mapa->objetivo.y) && iteracion_actual < max_iteraciones) {
     usar_sensor(mapa);
     generar_g_score_optimista(mapa, gScore);
-    // mostrar_g_score(mapa, gScore);
-    
+    mostrar_g_score(mapa, gScore);
+
     Punto mejor_vecino;
     int mejor_gScore = INT_MAX;
     int movimiento_posible = 0;

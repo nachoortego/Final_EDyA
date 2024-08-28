@@ -132,29 +132,29 @@ int movimiento_valido(Mapa mapa, Punto nuevo, int print) {
 void mover_robot(Mapa mapa, Punto nuevo) {
   fprintf(stderr, "> MOVER: (%d, %d) -> (%d, %d)\n", mapa->robot.y, mapa->robot.x, nuevo.y, nuevo.x);
 
-    // Determina la dirección del movimiento
-    char movimiento;
-    if (nuevo.x + 1 == mapa->robot.x) {
-        movimiento = 'L'; // Movimiento a la izquierda
-    } else if (nuevo.x - 1 == mapa->robot.x) {
-        movimiento = 'R'; // Movimiento a la derecha
-    } else if (nuevo.y + 1 == mapa->robot.y) {
-        movimiento = 'U'; // Movimiento hacia arriba
-    } else if (nuevo.y - 1 == mapa->robot.y) {
-        movimiento = 'D'; // Movimiento hacia abajo
-    } else {
-        return; // No hay movimiento
-    }
+  // Determina la dirección del movimiento
+  char movimiento;
+  if (nuevo.x + 1 == mapa->robot.x) {
+      movimiento = 'L'; // Movimiento a la izquierda
+  } else if (nuevo.x - 1 == mapa->robot.x) {
+      movimiento = 'R'; // Movimiento a la derecha
+  } else if (nuevo.y + 1 == mapa->robot.y) {
+      movimiento = 'U'; // Movimiento hacia arriba
+  } else if (nuevo.y - 1 == mapa->robot.y) {
+      movimiento = 'D'; // Movimiento hacia abajo
+  } else {
+      return; // No hay movimiento
+  }
 
-    // Actualiza la posición del robot
-    mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la antigua posición del robot
-    mapa->robot.x = nuevo.x;
-    mapa->robot.y = nuevo.y;
-    mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Marca la nueva posición del robot
+  // Actualiza la posición del robot
+  mapa->mat[mapa->robot.y][mapa->robot.x] = '_'; // Marca la antigua posición del robot
+  mapa->robot.x = nuevo.x;
+  mapa->robot.y = nuevo.y;
+  mapa->mat[mapa->robot.y][mapa->robot.x] = 'R'; // Marca la nueva posición del robot
 
-    // Registra el movimiento
-    arreglo_escribir(mapa->camino, &movimiento, (FuncionCopia) copia_direccion);
-    imprimir_mapa(mapa);
+  // Registra el movimiento
+  arreglo_escribir(mapa->camino, &movimiento, (FuncionCopia) copia_direccion);
+  imprimir_mapa(mapa);
 }
 
 
