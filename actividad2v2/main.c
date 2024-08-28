@@ -119,11 +119,11 @@ void generar_g_score_optimista(Mapa mapa, int** gScore) {
 
   while (!cola_vacia(cola)) {
     Punto actual = cola_extraer_min(cola);
-
-    // Si ya hemos alcanzado la posición del robot, podemos detenernos
-    if (actual.x == mapa->robot.x && actual.y == mapa->robot.y) {
-      break; // Detenemos el algoritmo ya que encontramos el camino al robot
-    }
+    /*! IMPORTANTE: esto afecta la cantidad de usos del sensor */
+    // // Si ya hemos alcanzado la posición del robot, podemos detenernos
+    // if (actual.x == mapa->robot.x && actual.y == mapa->robot.y) {
+    //   break; // Detenemos el algoritmo ya que encontramos el camino al robot
+    // }
 
     for (int dir = 0; dir < 4; dir++) {
       Punto vecino;
@@ -153,17 +153,25 @@ static void mostrar_g_score(Mapa mapa, int** gScore) {
   }
 }
 
+static int vecino_desconocido(Mapa mapa, Punto vecino) {
+  fprintf(stderr, "> Vecino no conocido \n");
+  return !(mapa->mat[vecino.y][vecino.x] == '_' || mapa->mat[vecino.y][vecino.x] == 'F');
+}
+
+static int robot_ha_llegado(Mapa mapa) {
+  return mapa->robot.x == mapa->objetivo.x && mapa->robot.y == mapa->objetivo.y;
+}
+
 void path_finding(Mapa mapa, int** gScore) {
   usar_sensor(mapa);
   generar_g_score_optimista(mapa, gScore);
   mostrar_g_score(mapa, gScore);
   imprimir_mapa(mapa); 
 
-  while (!(mapa->robot.x == mapa->objetivo.x && mapa->robot.y == mapa->objetivo.y)) {
+  while (!robot_ha_llegado(mapa)) {
     Punto mejor_vecino;
     int mejor_gScore = INT_MAX;
     int movimiento_posible = 0;
-    int vecino_conocido = 0;
 
     for (int dir = 0; dir < 4; dir++) {
       Punto vecino;
@@ -174,33 +182,26 @@ void path_finding(Mapa mapa, int** gScore) {
         int gScore_vecino = gScore[vecino.y][vecino.x];
         fprintf(stderr, "> gScore de %d %d: %d\n", vecino.y, vecino.x, gScore_vecino);
 
-        if(gScore_vecino == mejor_gScore && (mapa->mat[vecino.y][vecino.x] == '_' || mapa->mat[vecino.y][vecino.x] == 'F')) {
-          mejor_vecino = vecino;
-          movimiento_posible = 1;
-          vecino_conocido = 1;
-        }
-
-        if (gScore_vecino < mejor_gScore) {
-          mejor_gScore = gScore_vecino;
-          mejor_vecino = vecino;
-          movimiento_posible = 1; // Indica que hay un movimiento posible
-          vecino_conocido = (mapa->mat[vecino.y][vecino.x] == '_' || mapa->mat[vecino.y][vecino.x] == 'F');
+        if (gScore_vecino <= mejor_gScore) {
+          if (gScore_vecino < mejor_gScore || (mapa->mat[vecino.y][vecino.x] == '_')) {
+            mejor_gScore = gScore_vecino;
+            mejor_vecino = vecino;
+            movimiento_posible = 1;
+          }
         }
       }
     }
 
     if (movimiento_posible) {
-      fprintf(stderr, "> Mejor vecino: %d %d\n", mejor_vecino.y, mejor_vecino.x);
-      if (!vecino_conocido) {
-        fprintf(stderr, "> Vecino no conocido \n");
+      if (vecino_desconocido(mapa, mejor_vecino)) {
         usar_sensor(mapa);
         generar_g_score_optimista(mapa, gScore);
-        mostrar_g_score(mapa, gScore);
-        if(!movimiento_valido(mapa, mejor_vecino, 0)) {
+        if (!movimiento_valido(mapa, mejor_vecino, 0)) {
           fprintf(stderr, "> Vecino no válido \n");
           continue;
         }
       }
+      mostrar_g_score(mapa, gScore);
       mover_robot(mapa, mejor_vecino);
       fprintf(stderr, "> Robot movido a %d %d\n", mejor_vecino.y, mejor_vecino.x);
     }
