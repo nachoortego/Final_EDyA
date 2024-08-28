@@ -3,7 +3,6 @@
 
 #include "cola.h"
 #include "array.h"
-#include "tablahash.h"
 #include "punto.h"
 
 /**
@@ -39,7 +38,6 @@ typedef struct {
   Punto objetivo;
   ColaP cola;
   Arreglo camino;
-  TablaHash sensores;
 } _Mapa;
 
 typedef _Mapa* Mapa;

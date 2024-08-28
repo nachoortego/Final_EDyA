@@ -30,7 +30,6 @@ Mapa mapa_crear(int N, int M, int D, int i1, int j1, int i2, int j2) {
   mapa->objetivo.x = j2;  // Inicializa objetivo.x
   mapa->cola = cola_crear(mapa->N * mapa->M); // Inicializar la cola
   mapa->camino = arreglo_crear(mapa->N * mapa->M); // Inicializar el arreglo camino
-  mapa->sensores = tablahash_crear((mapa->N * mapa->M) / 2, copiar_punto, comparar_puntos, destruir_punto, hash_punto); // Inicializar la tabla de sensores
 
   // Inicializar matriz
   mapa->mat = malloc(sizeof(char*) * mapa->N);
@@ -108,7 +107,6 @@ void destruir_mapa(Mapa mapa) {
   free(mapa->gScore); // Libera gScore
   cola_destruir(mapa->cola); // Libera la cola 
   arreglo_destruir(mapa->camino, destruir_arrego); // Libera el Arreglo camino
-  tablahash_destruir(mapa->sensores); // Libera la tabla de sensores
   free(mapa);
 }
 

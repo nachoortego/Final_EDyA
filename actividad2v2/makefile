@@ -2,10 +2,10 @@
 TARGET = robot
 
 # Archivos fuente
-SRC = main.c mapa.c glist.c cola.c array.c tablahash.c punto.c
+SRC = main.c mapa.c cola.c array.c punto.c
 
 # Archivos de encabezado
-HEADERS = mapa.h glist.h cola.h array.h tablahash.h punto.h
+HEADERS = mapa.h cola.h array.h punto.h
 
 # Compilador
 CC = gcc
@@ -23,9 +23,7 @@ clean:
 
 # Dependencias
 main.o: main.c mapa.h
-mapa.o: mapa.c mapa.h tablahash.h punto.h cola.h
+mapa.o: mapa.c mapa.h punto.h cola.h
 cola.o: cola.c cola.h punto.h
 array.o: array.c array.h
-tablahash.o: tablahash.c tablahash.h glist.h
 punto.o: punto.c punto.h
-glist.o: glist.c glist.h

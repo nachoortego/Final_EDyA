@@ -59,25 +59,19 @@ int max_rayos(int d1, int d2, int d3, int d4, int d_max){
  * @return 1 si el sensor fue usado y el mapa fue actualizado, 0 si el sensor ya había sido usado en esa posición.
  */
 int usar_sensor(Mapa mapa) {
-  fprintf(stderr, "> USAR SENSOR\n");
-  if (!tablahash_buscar(mapa->sensores, &mapa->robot)) { // Si el sensor nunca fue utilizado en esa posición
-    int d1, d2, d3, d4;
-    printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
-    fflush(stdout);
-    scanf("%d%d%d%d", &d1, &d2, &d3, &d4);
-    fprintf(stderr, "> SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
+  int d1, d2, d3, d4;
+  printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
+  fflush(stdout);
+  scanf("%d%d%d%d", &d1, &d2, &d3, &d4);
+  fprintf(stderr, "> SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
 
-    mapa->D = max_rayos(d1, d2, d3, d4, mapa->D);
-    fprintf(stderr, "> MAX_D: %d\n", mapa->D);
+  mapa->D = max_rayos(d1, d2, d3, d4, mapa->D);
+  fprintf(stderr, "> MAX_D: %d\n", mapa->D);
 
-    lanzar_rayos(mapa, mapa->robot, d1, d2, d3, d4);
+  lanzar_rayos(mapa, mapa->robot, d1, d2, d3, d4);
 
-    tablahash_insertar(mapa->sensores, &mapa->robot); // Inserta el punto en la tabla de sensores
-    imprimir_mapa(mapa);
-    return 1;
-  }
-  fprintf(stderr, "> SENSOR YA USADO\n");
-  return 0;
+  imprimir_mapa(mapa);
+  return 1;
 }
 
 static void imprimir_char(void* dato) {
@@ -104,7 +98,7 @@ int dy[] = {-1, 1, 0, 0};  // LEFT, RIGHT, UP, DOWN
 void generar_g_score_optimista(Mapa mapa) {
   // Inicializa gScore con un valor alto (infinito)
   fprintf(stderr, "> GENERAR G SCORE\n");
-  
+
   for (int i = 0; i < mapa->N; i++) {
     for (int j = 0; j < mapa->M; j++) {
       mapa->gScore[i][j] = INT_MAX;
