@@ -2,7 +2,7 @@
 TARGET = robot
 
 # Archivos fuente
-SRC = main.c algorithm.c mapa.c cola.c array.c punto.c
+SRC = main.c algorithm.c mapa.c cola.c array.c
 
 # Archivos de encabezado
 HEADERS = algorithm.h  mapa.h cola.h array.h punto.h
@@ -27,4 +27,4 @@ algorithm.o: algorithm.c algorithm.h
 mapa.o: mapa.c mapa.h punto.h cola.h
 cola.o: cola.c cola.h punto.h
 array.o: array.c array.h
-punto.o: punto.c punto.h
+punto.o: punto.h

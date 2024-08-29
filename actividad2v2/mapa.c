@@ -82,12 +82,6 @@ void imprimir_mapa(Mapa mapa) {
 }
 
 /**
- * Funcion que se pasa como parámetro a pila_destruir, no destruye el dato.
- * @param dato El dato a no destruir.
- */
-void no_destruir_pila(void* dato) {}
-
-/**
  * Funcion que se pasa como parámetro a arreglo_destruir para liberar el char*.
  * @param dato El dato a liberar.
  */
@@ -164,26 +158,4 @@ void mover_robot(Mapa mapa, Punto nuevo) {
 
   // Registra el movimiento
   arreglo_escribir(mapa->camino, &movimiento, (FuncionCopia) copia_direccion);
-}
-
-
-/**
- * Toma una dirección y devuelve su opuesta, utilizado para backtracking.
- * 
- * @param dir La dirección para la cual se desea obtener la opuesta.
- * @return La dirección opuesta a la proporcionada.
- */
-Direccion reverse(Direccion dir) {
-  switch (dir) {
-  case LEFT:
-    return RIGHT;
-  case RIGHT:
-    return LEFT;
-  case UP:
-    return DOWN;
-  case DOWN:
-    return UP;
-  default:
-    return dir; // Devuelve por defecto, este caso no ocurre si dir esta bien definido
-  }
 }

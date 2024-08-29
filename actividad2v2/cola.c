@@ -3,8 +3,8 @@
 #include "cola.h"
 
 // Función para crear una cola con una capacidad inicial
-ColaP cola_crear(int capacity) {
-    ColaP cp = (ColaP)malloc(sizeof(_ColaP));
+Cola cola_crear(int capacity) {
+    Cola cp = (Cola)malloc(sizeof(_Cola));
     if (!cp) {
         fprintf(stderr, "Error al asignar memoria para la cola.\n");
         exit(EXIT_FAILURE);
@@ -23,7 +23,7 @@ ColaP cola_crear(int capacity) {
 }
 
 // Función para insertar un nuevo elemento en la cola
-void cola_insertar(ColaP cp, Punto p) {
+void cola_insertar(Cola cp, Punto p) {
     if (cp->size >= cp->capacity) {
         // Si la cola está llena, aumentamos su capacidad
         cp->capacity *= 2;
@@ -37,7 +37,7 @@ void cola_insertar(ColaP cp, Punto p) {
 }
 
 // Función para extraer el elemento de mayor antigüedad de la cola (FIFO)
-Punto cola_extraer(ColaP cp) {
+Punto cola_extraer(Cola cp) {
     if (cola_vacia(cp)) {
         fprintf(stderr, "Error: la cola está vacía.\n");
         exit(EXIT_FAILURE); // O manejar el error según tu lógica
@@ -55,12 +55,12 @@ Punto cola_extraer(ColaP cp) {
 }
 
 // Función para verificar si la cola está vacía
-int cola_vacia(ColaP cp) {
+int cola_vacia(Cola cp) {
     return cp->size == 0;
 }
 
 // Función para destruir la cola y liberar la memoria
-void cola_destruir(ColaP cp) {
+void cola_destruir(Cola cp) {
     if (cp) {
         free(cp->data);
         free(cp);

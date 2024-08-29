@@ -1,32 +1,22 @@
 #ifndef __MAPA_H__
 #define __MAPA_H__
 
-#include "cola.h"
 #include "array.h"
+#include "cola.h"
 #include "punto.h"
-
-/**
- * Tipo de dato Direccion para representar direcciones de movimiento
- */
-typedef enum {
-  LEFT,   // "L"
-  RIGHT,  // "R"
-  UP,     // "U"
-  DOWN    // "D"
-} Direccion;
 
 /**
  * Estructura de Mapa para representar el entorno.
  * 
- * @param mat Matriz bidimensional que representa el mapa.
  * @param N Número de filas del mapa.
  * @param M Número de columnas del mapa.
  * @param D Máxima distancia del sensor.
+ * @param mat Matriz bidimensional que representa el mapa.
+ * @param gScore Matriz bidimensional que guarda el costo de llegar al objetivo desde cada punto.
  * @param robot Punto que representa la ubicación del robot en el mapa.
  * @param objetivo Punto que representa el punto de llegada en el mapa.
- * @param cola ColaP utilizado para D*.
+ * @param cola Cola utilizada para generar la matriz gScore.
  * @param camino Arreglo que guarda los movimientos del robot para enviar al sensor.
- * @param sensores TablaHash que guarda los puntos donde el robot utilizó el sensor.
  */
 typedef struct {
   int N;
@@ -36,7 +26,7 @@ typedef struct {
   int** gScore;
   Punto robot;
   Punto objetivo;
-  ColaP cola;
+  Cola cola;
   Arreglo camino;
 } _Mapa;
 
@@ -68,14 +58,6 @@ void imprimir_mapa(Mapa);
  * @param mapa El mapa que se desea destruir.
  */
 void destruir_mapa(Mapa);
-
-/**
- * Toma una dirección y devuelve su opuesta, utilizado para backtracking.
- * 
- * @param dir La dirección para la cual se desea obtener la opuesta.
- * @return La dirección opuesta a la proporcionada.
- */
-Direccion reverse(Direccion);
 
 void mover_robot(Mapa mapa, Punto dir);
 int movimiento_valido(Mapa mapa, Punto dir, int print);
