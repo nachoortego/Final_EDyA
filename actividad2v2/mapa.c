@@ -18,12 +18,12 @@
  * @param j2 Columna de la posición del objetivo.
  * @return Un puntero al nuevo mapa creado.
  */
-Mapa mapa_crear(int N, int M, int D, int i1, int j1, int i2, int j2) {
+Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   Mapa mapa = malloc(sizeof(_Mapa));
   assert(mapa != NULL);
   mapa->N = N;  // Inicializa N
   mapa->M = M;  // Inicializa M
-  mapa->D = D;  // Inicializa D
+  mapa->D = 1;  // Inicializa D
   mapa->robot.y = i1;  // Inicializa robot.y
   mapa->robot.x = j1;  // Inicializa robot.x
   mapa->objetivo.y = i2;  // Inicializa objetivo.y
