@@ -6,18 +6,6 @@
 
 #define LINE_SIZE 255
 
-/**
- * Crea un nuevo mapa con las dimensiones dadas y coloca el robot y el objetivo en las coordenadas especificadas.
- * 
- * @param N Número de filas del mapa.
- * @param M Número de columnas del mapa.
- * @param D Máxima distancia del sensor.
- * @param i1 Fila de la posición inicial del robot.
- * @param j1 Columna de la posición inicial del robot.
- * @param i2 Fila de la posición del objetivo.
- * @param j2 Columna de la posición del objetivo.
- * @return Un puntero al nuevo mapa creado.
- */
 Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   Mapa mapa = malloc(sizeof(_Mapa));
   assert(mapa != NULL);
@@ -57,11 +45,6 @@ Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   return mapa;
 }
 
-/**
- * Imprime el mapa por la salida estándar.
- * 
- * @param mapa El mapa que se desea imprimir.
- */
 void imprimir_mapa(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) {
     for (int j = 0; j < mapa->M; j++) {
@@ -81,16 +64,8 @@ void imprimir_mapa(Mapa mapa) {
   fprintf(stderr,"\033[0;37m\n"); // Restaura el color a blanco después del mapa
 }
 
-/**
- * Funcion que se pasa como parámetro a arreglo_destruir para liberar el char*.
- * @param dato El dato a liberar.
- */
-void destruir_arrego(void* dato) { free(dato); }
+static void destruir_arrego(void* dato) { free(dato); }
 
-/**
- * Destruye el mapa y sus datos.
- * @param mapa El mapa a destruir.
- */
 void destruir_mapa(Mapa mapa) {
   for (int i = 0; i < mapa->N; i++) { // Libera cada fila
     free(mapa->mat[i]);
@@ -103,7 +78,6 @@ void destruir_mapa(Mapa mapa) {
   arreglo_destruir(mapa->camino, destruir_arrego); // Libera el Arreglo camino
   free(mapa);
 }
-
 
 /**
  * Funcion local que toma arreglo_escribir como argumento. 

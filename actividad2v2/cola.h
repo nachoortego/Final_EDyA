@@ -3,7 +3,13 @@
 
 #include "punto.h"
 
-// Estructura para representar una cola
+/**
+ * Estructura para representar una cola que almacena elementos de tipo Punto.
+ * 
+ * @param data puntero a Punto para el dato.
+ * @param capacity Número actual de elementos en la cola.
+ * @param capacity Capacidad máxima del arreglo antes de redimensionar..
+ */
 typedef struct {
   Punto* data;
   int size;
@@ -12,19 +18,43 @@ typedef struct {
 
 typedef _Cola* Cola;
 
-// Función para crear una cola con una capacidad inicial
+/**
+ * Crea una cola con una capacidad dada.
+ * 
+ * @param capacity Capacidad inicial de la cola.
+ * @return Un puntero a la nueva cola creada.
+ */
 Cola cola_crear(int capacity);
 
-// Función para insertar un nuevo elemento en la cola
+/**
+ * Inserta un nuevo elemento en la cola.
+ * 
+ * @param cp Puntero a la cola donde se insertará el nuevo elemento.
+ * @param p Punto que se va a insertar en la cola.
+ */
 void cola_insertar(Cola cp, Punto p);
 
-// Función para extraer el elemento de mayor antiguedad de la cola
+/**
+ * Extrae el elemento de mayor antigüedad de la cola.
+ *
+ * @param cp Puntero a la cola de la que se extraerá el elemento.
+ * @return El Punto extraído de la cola. Si la cola está vacía, el comportamiento es indefinido.
+ */
 Punto cola_extraer(Cola cp);
 
-// Función para verificar si la cola está vacía
+/**
+ * Verifica si la cola está vacía.
+ *
+ * @param cp Puntero a la cola que se va a verificar.
+ * @return 1 si la cola está vacía, 0 en caso contrario.
+ */
 int cola_vacia(Cola cp);
 
-// Función para destruir la cola y liberar la memoria
+/**
+ * Destruye la cola y libera la memoria.
+ *
+ * @param cp Puntero a la cola que se va a destruir.
+ */
 void cola_destruir(Cola cp);
 
 #endif // COLA_H

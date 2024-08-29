@@ -108,7 +108,7 @@ void generar_g_score(Mapa mapa) {
   mapa->gScore[objetivo.y][objetivo.x] = 0;
 
   // Cola de prioridad para explorar los puntos desde el objetivo
-  ColaP cola = cola_crear(mapa->N * mapa->M);
+  Cola cola = cola_crear(mapa->N * mapa->M);
   cola_insertar(cola, objetivo);
 
   while (!cola_vacia(cola)) {
