@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdlib.h>
+// #include <limits.h>
 #include "mapa.h"
 
 #define INT_MAX 99 //2147483647
@@ -110,7 +111,7 @@ static void enviar_camino(Mapa mapa) {
 int dx[] = {0, 0, -1, 1};  // LEFT, RIGHT, UP, DOWN
 int dy[] = {-1, 1, 0, 0};  // LEFT, RIGHT, UP, DOWN
 
-void generar_g_score_optimista(Mapa mapa) {
+void generar_g_score(Mapa mapa) {
   // Inicializa gScore con un valor alto (infinito)
   fprintf(stderr, "> GENERAR G SCORE\n");
 
@@ -119,7 +120,6 @@ void generar_g_score_optimista(Mapa mapa) {
       mapa->gScore[i][j] = INT_MAX;
     }
   }
-
 
   // El gScore del objetivo es 0, ya que es el punto de partida para el cálculo
   Punto objetivo = mapa->objetivo;
@@ -130,7 +130,7 @@ void generar_g_score_optimista(Mapa mapa) {
   cola_insertar(cola, objetivo);
 
   while (!cola_vacia(cola)) {
-    Punto actual = cola_extraer_min(cola);
+    Punto actual = cola_extraer(cola);
     /*! IMPORTANTE: esto afecta la cantidad de usos del sensor */
     // // Si ya hemos alcanzado la posición del robot, podemos detenernos
     // if (actual.x == mapa->robot.x && actual.y == mapa->robot.y) {
@@ -176,7 +176,7 @@ static int robot_ha_llegado(Mapa mapa) {
 
 void path_finding(Mapa mapa) {
   usar_sensor(mapa);
-  generar_g_score_optimista(mapa);
+  generar_g_score(mapa);
   mostrar_g_score(mapa);
   imprimir_mapa(mapa); 
 
@@ -191,7 +191,7 @@ void path_finding(Mapa mapa) {
       vecino.x = mapa->robot.x + dx[dir];
       vecino.y = mapa->robot.y + dy[dir];
 
-      if (movimiento_valido(mapa, vecino, 1)) {
+      if (movimiento_valido(mapa, vecino, 0)) {
         int gScore_vecino = mapa->gScore[vecino.y][vecino.x];
         fprintf(stderr, "> gScore de %d %d: %d\n", vecino.y, vecino.x, gScore_vecino);
 
@@ -209,7 +209,7 @@ void path_finding(Mapa mapa) {
       if (vecino_desconocido(mapa, mejor_vecino)) {
         muro_detectado = usar_sensor(mapa);
         if(muro_detectado) {
-          generar_g_score_optimista(mapa);
+          generar_g_score(mapa);
           mostrar_g_score(mapa);
         }
         if (!movimiento_valido(mapa, mejor_vecino, 0)) {
