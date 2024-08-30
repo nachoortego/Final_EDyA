@@ -60,7 +60,6 @@ void imprimir_mapa(Mapa);
  */
 void destruir_mapa(Mapa);
 
-
 /**
  * Mueve el robot a la posición dada y agrega su dirección al Arreglo camino.
  * Solo funciona si el punto es adyacente al robot.

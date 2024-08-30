@@ -4,8 +4,6 @@
 #include <limits.h>
 #include "mapa.h"
 
-// #define INT_MAX 99 
-
 int lanzar_rayos(Mapa mapa, Punto origen, int d1, int d2, int d3, int d4) {
   int muro_detectado = 0;
 
@@ -97,11 +95,9 @@ void generar_g_score(Mapa mapa) {
   // Inicializa gScore con un valor alto (infinito)
   fprintf(stderr, "> GENERAR G SCORE\n");
 
-  for (int i = 0; i < mapa->N; i++) {
-    for (int j = 0; j < mapa->M; j++) {
+  for (int i = 0; i < mapa->N; i++) 
+    for (int j = 0; j < mapa->M; j++) 
       mapa->gScore[i][j] = INT_MAX;
-    }
-  }
 
   // El gScore del objetivo es 0, ya que es el punto de partida para el cálculo
   Punto objetivo = mapa->objetivo;
@@ -113,11 +109,10 @@ void generar_g_score(Mapa mapa) {
 
   while (!cola_vacia(cola)) {
     Punto actual = cola_extraer(cola);
-    /*! IMPORTANTE: esto afecta la cantidad de usos del sensor */
+
     // Si ya hemos alcanzado la posición del robot, podemos detenernos
-    if (actual.x == mapa->robot.x && actual.y == mapa->robot.y) {
+    if (actual.x == mapa->robot.x && actual.y == mapa->robot.y)
       break; // Detenemos el algoritmo ya que encontramos el camino al robot
-    }
 
     for (int dir = 0; dir < 4; dir++) {
       Punto vecino;
@@ -200,11 +195,12 @@ void path_finding(Mapa mapa) {
           generar_g_score(mapa);
           mostrar_g_score(mapa);
         }
-        if (!movimiento_valido(mapa, mejor_vecino)) {
-          continue;
-        }
+        if (movimiento_valido(mapa, mejor_vecino))
+          mover_robot(mapa, mejor_vecino);
       }
-      mover_robot(mapa, mejor_vecino);
+      else
+        mover_robot(mapa, mejor_vecino);
+      
       fprintf(stderr, "> Robot movido a %d %d\n", mejor_vecino.y, mejor_vecino.x);
     }
   }
