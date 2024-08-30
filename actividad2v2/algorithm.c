@@ -127,7 +127,7 @@ void generar_g_score(Mapa mapa) {
       vecino.x = actual.x + dx[dir];
       vecino.y = actual.y + dy[dir];
 
-      if (movimiento_valido(mapa, vecino, 0)) {
+      if (movimiento_valido(mapa, vecino)) {
         int tentative_gScore = mapa->gScore[actual.y][actual.x] + 1;
 
         if (tentative_gScore < mapa->gScore[vecino.y][vecino.x]) {
@@ -180,7 +180,7 @@ void path_finding(Mapa mapa) {
       vecino.x = mapa->robot.x + dx[dir];
       vecino.y = mapa->robot.y + dy[dir];
 
-      if (movimiento_valido(mapa, vecino, 0)) {
+      if (movimiento_valido(mapa, vecino)) {
         int gScore_vecino = mapa->gScore[vecino.y][vecino.x];
 
         if (gScore_vecino <= mejor_gScore) {
@@ -200,7 +200,7 @@ void path_finding(Mapa mapa) {
           generar_g_score(mapa);
           mostrar_g_score(mapa);
         }
-        if (!movimiento_valido(mapa, mejor_vecino, 0)) {
+        if (!movimiento_valido(mapa, mejor_vecino)) {
           continue;
         }
       }

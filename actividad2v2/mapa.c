@@ -90,7 +90,7 @@ static char* copia_direccion(char* dato) {
   return nuevoDato; // Devuelve el mismo dato sin realizar una copia
 }
 
-int movimiento_valido(Mapa mapa, Punto nuevo, int print) {
+int movimiento_valido(Mapa mapa, Punto nuevo) {
   // Verifica que la nueva posición esté dentro de los límites del mapa
   if (nuevo.x < 0 || nuevo.x >= mapa->M || nuevo.y < 0 || nuevo.y >= mapa->N) {
     return 0; // Movimiento fuera de los límites del mapa
@@ -100,9 +100,6 @@ int movimiento_valido(Mapa mapa, Punto nuevo, int print) {
   if (mapa->mat[nuevo.y][nuevo.x] == '#') {
     return 0; // Movimiento a una casilla no válida
   }
-
-  if(print) 
-    fprintf(stderr, "> (%d, %d) VALIDO \n", nuevo.x, nuevo.y);
 
   return 1; // Movimiento válido
 }

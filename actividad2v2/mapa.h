@@ -34,6 +34,7 @@ typedef _Mapa* Mapa;
 
 /**
  * Crea un nuevo mapa con las dimensiones dadas y coloca el robot y el objetivo en las coordenadas especificadas.
+ * Inicializa las estructuras Cola y Arreglo
  * 
  * @param N Número de filas del mapa.
  * @param M Número de columnas del mapa.
@@ -59,8 +60,24 @@ void imprimir_mapa(Mapa);
  */
 void destruir_mapa(Mapa);
 
+
+/**
+ * Mueve el robot a la posición dada y agrega su dirección al Arreglo camino.
+ * Solo funciona si el punto es adyacente al robot.
+ * 
+ * @param mapa El mapa en el que se encuentra el robot.
+ * @param nuevo La nueva posición del robot.
+ */
 void mover_robot(Mapa mapa, Punto dir);
-int movimiento_valido(Mapa mapa, Punto dir, int print);
+
+/**
+ * Verifica si el movimiento es válido.
+ * 
+ * @param mapa El mapa en el que se encuentra el robot.
+ * @param nuevo El punto a analizar.
+ * @return 1 si el movimiento es válido, 0 en caso contrario.
+ */
+int movimiento_valido(Mapa mapa, Punto dir);
 
 
 #endif /* __MAPA_H__ */
