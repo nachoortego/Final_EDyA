@@ -12,6 +12,7 @@ Cola cola_crear(int capacity) {
 
   cp->size = 0;
   cp->capacity = capacity;
+
   return cp;
 }
 
@@ -31,11 +32,12 @@ Punto cola_extraer(Cola cp) {
   Punto primero = cp->data[0];
 
   // Desplazar todos los elementos hacia la izquierda
-  for (int i = 1; i < cp->size; i++) {
+  for (int i = 1; i < cp->size; i++)
     cp->data[i - 1] = cp->data[i];
-  }
+
 
   cp->size--; // Reducir el tamaño de la cola
+
   return primero;
 }
 

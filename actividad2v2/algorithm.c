@@ -114,10 +114,10 @@ void generar_g_score(Mapa mapa) {
   while (!cola_vacia(cola)) {
     Punto actual = cola_extraer(cola);
     /*! IMPORTANTE: esto afecta la cantidad de usos del sensor */
-    // // Si ya hemos alcanzado la posición del robot, podemos detenernos
-    // if (actual.x == mapa->robot.x && actual.y == mapa->robot.y) {
-    //   break; // Detenemos el algoritmo ya que encontramos el camino al robot
-    // }
+    // Si ya hemos alcanzado la posición del robot, podemos detenernos
+    if (actual.x == mapa->robot.x && actual.y == mapa->robot.y) {
+      break; // Detenemos el algoritmo ya que encontramos el camino al robot
+    }
 
     for (int dir = 0; dir < 4; dir++) {
       Punto vecino;
@@ -151,7 +151,6 @@ static void mostrar_g_score(Mapa mapa) {
 }
 
 static int vecino_desconocido(Mapa mapa, Punto vecino) {
-  fprintf(stderr, "> Vecino no conocido \n");
   return !(mapa->mat[vecino.y][vecino.x] == '_' || mapa->mat[vecino.y][vecino.x] == 'F');
 }
 
@@ -183,7 +182,6 @@ void path_finding(Mapa mapa) {
 
       if (movimiento_valido(mapa, vecino, 0)) {
         int gScore_vecino = mapa->gScore[vecino.y][vecino.x];
-        fprintf(stderr, "> gScore de %d %d: %d\n", vecino.y, vecino.x, gScore_vecino);
 
         if (gScore_vecino <= mejor_gScore) {
           if (gScore_vecino < mejor_gScore || (mapa->mat[vecino.y][vecino.x] == '_')) {
@@ -203,7 +201,6 @@ void path_finding(Mapa mapa) {
           mostrar_g_score(mapa);
         }
         if (!movimiento_valido(mapa, mejor_vecino, 0)) {
-          fprintf(stderr, "> Vecino no válido \n");
           continue;
         }
       }
