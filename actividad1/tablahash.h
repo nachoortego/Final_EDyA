@@ -1,6 +1,8 @@
 #ifndef __TABLAHASH_H__
 #define __TABLAHASH_H__
 
+#include "glist.h"
+
 typedef void *(*FuncionCopiadora)(void *dato);
 /** Retorna una copia física del dato */
 typedef int (*FuncionComparadora)(void *dato1, void *dato2);
@@ -10,6 +12,27 @@ typedef void (*FuncionDestructora)(void *dato);
 /** Libera la memoria alocada para el dato */
 typedef unsigned (*FuncionHash)(void *dato);
 /** Retorna un entero sin signo para el dato */
+
+/**
+ * Casillas en la que almacenaremos los datos de la tabla hash.
+ */
+typedef struct {
+  GList lista;
+} CasillaHash;
+
+/**
+ * Estructura principal que representa la tabla hash.
+ */
+struct _TablaHash {
+  CasillaHash *elems;
+  unsigned numElems;
+  unsigned capacidad;
+  FuncionCopiadora copia;
+  FuncionComparadora comp;
+  FuncionDestructora destr;
+  FuncionHash hash;
+};
+
 
 typedef struct _TablaHash *TablaHash;
 

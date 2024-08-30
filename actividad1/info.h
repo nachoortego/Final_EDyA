@@ -15,7 +15,7 @@ typedef _Info* Info;
 
 /**
  * Toma como argumento el nombre de un archivo.
- * Devuelve una estructura Infocon la informacion del archivo.
+ * Devuelve una estructura Info con la informacion del archivo.
  * Devuelve NULL si el archivo no existe o no es válido.
  */
 Info info_crear(char filename[]);
