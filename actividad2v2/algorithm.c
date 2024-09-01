@@ -67,10 +67,8 @@ int usar_sensor(Mapa mapa) {
   printf("? %d %d\n", mapa->robot.y, mapa->robot.x);
   fflush(stdout);
   scanf("%d%d%d%d", &d1, &d2, &d3, &d4);
-  fprintf(stderr, "> SENSOR: %d %d %d %d\n", d1, d2, d3, d4);
 
   mapa->D = max_rayos(d1, d2, d3, d4, mapa->D);
-  fprintf(stderr, "> MAX_D: %d\n", mapa->D);
 
   muro_detectado = lanzar_rayos(mapa, mapa->robot, d1, d2, d3, d4);
 
@@ -93,7 +91,6 @@ void enviar_camino(Mapa mapa) {
 
 void generar_g_score(Mapa mapa) {
   // Inicializa gScore con un valor alto (infinito)
-  fprintf(stderr, "> GENERAR G SCORE\n");
 
   for (int i = 0; i < mapa->N; i++) 
     for (int j = 0; j < mapa->M; j++) 
@@ -157,7 +154,6 @@ void path_finding(Mapa mapa) {
   usar_sensor(mapa);
   generar_g_score(mapa);
   mostrar_g_score(mapa);
-  imprimir_mapa(mapa); 
 
   while (!robot_ha_llegado(mapa)) {
     Punto mejor_vecino;
@@ -191,17 +187,13 @@ void path_finding(Mapa mapa) {
     if (movimiento_posible) {
       if (vecino_desconocido(mapa, mejor_vecino)) {
         muro_detectado = usar_sensor(mapa);
-        if(muro_detectado) {
+        if(muro_detectado)
           generar_g_score(mapa);
-          mostrar_g_score(mapa);
-        }
         if (movimiento_valido(mapa, mejor_vecino))
           mover_robot(mapa, mejor_vecino);
       }
       else
         mover_robot(mapa, mejor_vecino);
-      
-      fprintf(stderr, "> Robot movido a %d %d\n", mejor_vecino.y, mejor_vecino.x);
-    }
+      }
   }
 }

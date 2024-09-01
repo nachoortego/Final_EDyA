@@ -105,8 +105,6 @@ int movimiento_valido(Mapa mapa, Punto nuevo) {
 }
 
 void mover_robot(Mapa mapa, Punto nuevo) {
-  // fprintf(stderr, "> MOVER: (%d, %d) -> (%d, %d)\n", mapa->robot.y, mapa->robot.x, nuevo.y, nuevo.x);
-
   // Determina la dirección del movimiento
   char movimiento;
   if (nuevo.x + 1 == mapa->robot.x) {

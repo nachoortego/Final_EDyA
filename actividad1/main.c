@@ -18,8 +18,7 @@ int main(int argc, char *argv[]) {
   Mapa mapa = mapa_crear(info);
   Robot robot = robot_crear(info);
   destruir_info(info);
-
-  // imprimir_mapa(mapa);
+  
   encontrar_camino(mapa, robot);
   printf("\n");
   
