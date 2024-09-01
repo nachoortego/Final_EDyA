@@ -37,21 +37,3 @@ Direccion reverse(Direccion dir) {
     return dir; // Devuelve por defecto, este caso no ocurre si dir esta bien definido
   }
 }
-
-void imprimir_direccion(void *dato) {
-  Direccion dir = (Direccion)(intptr_t)dato; // Cast explícito
-  switch (dir) {
-    case LEFT:
-      printf("L");
-      break;
-    case RIGHT:
-      printf("R");
-      break;
-    case UP:
-      printf("U");
-      break;
-    case DOWN:
-      printf("D");
-      break;
-  }
-}

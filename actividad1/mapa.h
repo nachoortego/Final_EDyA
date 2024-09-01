@@ -4,10 +4,11 @@
 #include "info.h"
 
 /**
- * Estructura de Mapa para representar el entorno
- * Tiene una matriz bidimensional que representa el mapa
- * Un valor entero N para las filas
- * Un valor entero M para las columnas
+ * Estructura de Mapa para representar el entorno.
+ * 
+ * @param mat Matriz bidimensional que representa el mapa.
+ * @param N Número de filas en el mapa.
+ * @param M Número de columnas en el mapa.
  */
 typedef struct {
   char** mat;
@@ -18,20 +19,25 @@ typedef struct {
 typedef _Mapa* Mapa;
 
 /**
- * Toma como argumento el nombre de un archivo.
- * Devuelve un mapa con la informacion del archivo.
- * Devuelve NULL si el archivo no existe o no es válido.
+ * Toma como argumento la información del archivo y devuelve un mapa con la información del archivo.
+ * 
+ * @param info La información del archivo.
+ * @return Mapa Un mapa con la información del archivo, o NULL si el archivo no existe o no es válido.
  */
-Mapa mapa_crear(Info);
+Mapa mapa_crear(Info info);
 
 /**
  * Imprime el mapa por la salida estándar.
+ * 
+ * @param mapa El mapa a imprimir.
  */
-void imprimir_mapa(Mapa);
+void imprimir_mapa(Mapa mapa);
 
 /**
  * Destruye el mapa y sus datos.
+ * 
+ * @param mapa El mapa a destruir.
  */
-void destruir_mapa(Mapa);
+void destruir_mapa(Mapa mapa);
 
 #endif /* __MAPA_H__ */
