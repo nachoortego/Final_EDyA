@@ -10,7 +10,7 @@
  * 
  * @param N Número de filas del mapa.
  * @param M Número de columnas del mapa.
- * @param D Máxima distancia del sensor.
+ * @param D Máxima distancia conocida del sensor.
  * @param mat Matriz bidimensional que representa el mapa.
  * @param gScore Matriz bidimensional que guarda el costo de llegar al objetivo desde cada punto.
  * @param robot Punto que representa la ubicación del robot en el mapa.

@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <time.h>
-#include "mapa.h"
+#include "camino.h"
 
 
 /**
