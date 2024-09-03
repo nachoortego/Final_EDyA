@@ -29,7 +29,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         tablahash_insertar(robot->visitados, &(robot->pos)); // Inserta la posicion actual en la tabla de visitados
         robot->pos.x--; // Mueve el robot a la izquierda
         mapa->mat[robot->pos.y][robot->pos.x] = 'R';
-        if (ignorarRepetidos) // Si ignorarRepetidos es 1, no se apilan los movimientos
+        if (ignorarRepetidos) // Si ignorarRepetidos es 1, se apilan los movimientos
           robot->camino = pila_apilar(robot->camino, (void*)LEFT, no_copiar); 
         printf("L");
         return 1;
@@ -41,7 +41,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         tablahash_insertar(robot->visitados, &(robot->pos)); // Inserta la posicion actual en la tabla de visitados
         robot->pos.x++; // Mueve el robot a la derecha
         mapa->mat[robot->pos.y][robot->pos.x] = 'R';
-        if (ignorarRepetidos) // Si ignorarRepetidos es 1, no se apilan los movimientos
+        if (ignorarRepetidos) // Si ignorarRepetidos es 1, se apilan los movimientos
           robot->camino = pila_apilar(robot->camino, (void*)RIGHT, no_copiar);
         printf("R");
         return 1;
@@ -53,7 +53,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         tablahash_insertar(robot->visitados, &(robot->pos)); // Inserta la posicion actual en la tabla de visitados
         robot->pos.y--; // Mueve el robot hacia arriba
         mapa->mat[robot->pos.y][robot->pos.x] = 'R';
-        if (ignorarRepetidos) // Si ignorarRepetidos es 1, no se apilan los movimientos
+        if (ignorarRepetidos) // Si ignorarRepetidos es 1, se apilan los movimientos
           robot->camino = pila_apilar(robot->camino, (void*)UP, no_copiar);
         printf("U");
         return 1;
@@ -65,7 +65,7 @@ int move(Mapa mapa, Robot robot, Direccion dir, int ignorarRepetidos) {
         tablahash_insertar(robot->visitados, &(robot->pos)); // Inserta la posicion actual en la tabla de visitados
         robot->pos.y++; // Mueve el robot hacia abajo
         mapa->mat[robot->pos.y][robot->pos.x] = 'R';
-        if (ignorarRepetidos) // Si ignorarRepetidos es 1, no se apilan los movimientos
+        if (ignorarRepetidos) // Si ignorarRepetidos es 1, se apilan los movimientos
           robot->camino = pila_apilar(robot->camino, (void*)DOWN, no_copiar);
         printf("D");
         return 1;
@@ -150,7 +150,7 @@ void encontrar_camino(Mapa mapa, Robot robot) {
       if(buscar_no_visitados(mapa, robot)) {} // Se mueve a casillas no visitadas
       else { // Si no las hay, vuelve en sus movimientos hasta que se pueda acercar nuevamente al objetivo
         Direccion retroceder = reverse((Direccion)(intptr_t) pila_tope(robot->camino)); // Casteo explicito de void* a Direccion
-        move(mapa, robot, retroceder, 0); // Retrocede usando la pila, se pasa el valor 0 a 'move' para permitir volver a casillas visitadas
+        move(mapa, robot, retroceder, 0); // Retrocede usando la pila, se pasa el valor 0 a 'ignorarRepetidos' (parametro de 'move') para permitir volver a casillas visitadas
         robot->camino = pila_desapilar(robot->camino, no_destruir);
       }
     }

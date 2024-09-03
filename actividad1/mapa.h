@@ -27,13 +27,6 @@ typedef _Mapa* Mapa;
 Mapa mapa_crear(Info info);
 
 /**
- * Imprime el mapa por la salida estándar.
- * 
- * @param mapa El mapa a imprimir.
- */
-void imprimir_mapa(Mapa mapa);
-
-/**
  * Destruye el mapa y sus datos.
  * 
  * @param mapa El mapa a destruir.
