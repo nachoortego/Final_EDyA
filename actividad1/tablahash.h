@@ -74,6 +74,14 @@ int tablahash_capacidad(TablaHash tabla);
 void tablahash_destruir(TablaHash tabla);
 
 /**
+ * Rehash de la tabla hash cuando el factor de carga supera el umbral.
+ * 
+ * @param tabla La tabla hash original.
+ * @param nueva_capacidad La nueva capacidad de la tabla hash.
+ */
+void rehash(TablaHash tabla, unsigned nueva_capacidad);
+
+/**
  * Inserta un dato en la tabla, o lo reemplaza si ya se encontraba.
  * 
  * @param tabla La tabla hash en la cual se desea insertar el dato.

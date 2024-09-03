@@ -16,9 +16,9 @@ int pila_es_vacia(Pila pila) {
 }
 
 void* pila_tope(Pila pila) {
-  if (pila_es_vacia(pila)) {
+  if (pila_es_vacia(pila))
     return NULL;  // Devuelve NULL si la pila está vacía
-  }
+    
   return pila->data;
 }
 

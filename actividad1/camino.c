@@ -124,22 +124,19 @@ int buscar_no_visitados(Mapa mapa, Robot robot) {
   // Arreglo de direcciones posibles
   if (priority) {
     Direccion temp[] = { LEFT, RIGHT, UP, DOWN }; // Si priority es 1, el robot opta por movimientos horizontales
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
       dirs[i] = temp[i];
-    }
   } else {
     Direccion temp[] = { UP, DOWN, LEFT, RIGHT }; // Si priority es 0, opta por movimientos verticales
-    for (int i = 0; i < 4; i++) {
-        dirs[i] = temp[i];
-    }
+    for (int i = 0; i < 4; i++)
+      dirs[i] = temp[i];
   }
 
   // Itera sobre cada dirección y verifica si hay celdas sin visitar
-  for (int i = 0; i < 4; i++) {
-    if (move(mapa, robot, dirs[i], 1)) {
+  for (int i = 0; i < 4; i++) 
+    if (move(mapa, robot, dirs[i], 1))
       return 1; // Celda sin visitar encontrada
-    }
-  }
+
   return 0; // No se encontraron celdas sin visitar
 }
 

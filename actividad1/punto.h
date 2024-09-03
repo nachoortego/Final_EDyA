@@ -22,6 +22,7 @@ Punto crear_punto(int x, int y);
 
 /**
  * Función hash para la estructura Punto.
+ * Utiliza un numero primo para minimizar colisiones.
  * 
  * @param punto Un puntero a la estructura Punto para la cual se calculará el valor hash.
  * @return Un valor hash calculado para el punto (x, y).

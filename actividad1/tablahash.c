@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define LOAD_FACTOR 0.75
+
 TablaHash tablahash_crear(unsigned capacidad, FuncionCopiadora copia,
                           FuncionComparadora comp, FuncionDestructora destr,
                           FuncionHash hash) {
@@ -44,7 +46,30 @@ void tablahash_destruir(TablaHash tabla) {
   return;
 }
 
+void rehash(TablaHash tabla, unsigned nueva_capacidad) {
+  // Crear una nueva tabla hash con la nueva capacidad.
+  TablaHash nueva_tabla = tablahash_crear(nueva_capacidad, tabla->copia, tabla->comp, tabla->destr, tabla->hash);
+
+  // Reinsertar todos los elementos en la nueva tabla.
+  for (unsigned idx = 0; idx < tabla->capacidad; ++idx) {
+    GList lista = tabla->elems[idx].lista;
+    for (GNode *node = lista; node != NULL; node = node->next)
+      tablahash_insertar(nueva_tabla, node->data);
+  }
+
+  // Destruir la tabla original.
+  tablahash_destruir(tabla);
+
+  // Actualizar la tabla original para que apunte a la nueva tabla.
+  *tabla = *nueva_tabla;
+  free(nueva_tabla);
+}
+
 void tablahash_insertar(TablaHash tabla, void *dato) {
+
+  // Rehash si el factor de carga supera el umbral.
+  if ((float)tabla->numElems / tabla->capacidad > LOAD_FACTOR)
+    rehash(tabla, tabla->capacidad * 2);
 
   // Calculamos la posicion del dato dado, de acuerdo a la funcion hash.
   unsigned idx = tabla->hash(dato) % tabla->capacidad;
