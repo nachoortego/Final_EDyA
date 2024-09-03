@@ -46,13 +46,6 @@ int usar_sensor(Mapa mapa);
 void generar_g_score(Mapa mapa);
 
 /**
- * Muestra el g-score del mapa en stderr para depuración.
- *
- * @param mapa El mapa en el que se encuentra el robot.
- */
-void mostrar_g_score(Mapa mapa);
-
-/**
  * Determina si un vecino es desconocido en el mapa (es decir, no es un muro ni el objetivo).
  *
  * @param mapa El mapa en el que se encuentra el robot.

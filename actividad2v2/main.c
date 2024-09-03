@@ -14,7 +14,6 @@ int main() {
   Mapa mapa = mapa_crear(N, M, i1, j1, i2, j2);
 
   path_finding(mapa);
-  imprimir_mapa(mapa);
   enviar_camino(mapa);
   destruir_mapa(mapa);
 

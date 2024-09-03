@@ -45,25 +45,6 @@ Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2) {
   return mapa;
 }
 
-void imprimir_mapa(Mapa mapa) {
-  for (int i = 0; i < mapa->N; i++) {
-    for (int j = 0; j < mapa->M; j++) {
-      if (mapa->mat[i][j] == '#') {
-        fprintf(stderr,"\033[0;35m"); // Violeta para obstáculo
-      } else if (mapa->mat[i][j] == '?') {
-        fprintf(stderr,"\033[0;37m"); // Blanco para lugar no descubierto
-      } else if (mapa->mat[i][j] == 'F') {
-        fprintf(stderr,"\033[0;32m"); // Verde para posición final
-      } else {
-        fprintf(stderr,"\033[0;31m"); // Default rojo para cualquier otro caso
-      }
-      fprintf(stderr,"%c ", mapa->mat[i][j]);
-    }
-  fprintf(stderr,"\n");
-  }
-  fprintf(stderr,"\033[0;37m\n"); // Restaura el color a blanco después del mapa
-}
-
 static void destruir_arrego(void* dato) { free(dato); }
 
 void destruir_mapa(Mapa mapa) {

@@ -47,13 +47,6 @@ typedef _Mapa* Mapa;
 Mapa mapa_crear(int N, int M, int i1, int j1, int i2, int j2);
 
 /**
- * Imprime el mapa por la salida estándar.
- * 
- * @param mapa El mapa que se desea imprimir.
- */
-void imprimir_mapa(Mapa);
-
-/**
  * Destruye el mapa y libera la memoria asociada.
  * 
  * @param mapa El mapa que se desea destruir.

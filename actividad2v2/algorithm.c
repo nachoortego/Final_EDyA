@@ -72,8 +72,6 @@ int usar_sensor(Mapa mapa) {
 
   muro_detectado = lanzar_rayos(mapa, mapa->robot, d1, d2, d3, d4);
 
-  imprimir_mapa(mapa);
-
   return muro_detectado;
 }
 
@@ -133,15 +131,6 @@ void generar_g_score(Mapa mapa) {
   cola_destruir(cola);  // Destruir la cola después de usarla
 }
 
-static void mostrar_g_score(Mapa mapa) {
-  for (int i = 0; i < mapa->N; i++) {
-    for (int j = 0; j < mapa->M; j++) {
-      fprintf(stderr, "%d ", mapa->gScore[i][j]);
-    }
-    fprintf(stderr, "\n");
-  }
-}
-
 static int vecino_desconocido(Mapa mapa, Punto vecino) {
   return !(mapa->mat[vecino.y][vecino.x] == '_' || mapa->mat[vecino.y][vecino.x] == 'F');
 }
@@ -153,7 +142,6 @@ static int robot_ha_llegado(Mapa mapa) {
 void path_finding(Mapa mapa) {
   usar_sensor(mapa);
   generar_g_score(mapa);
-  mostrar_g_score(mapa);
 
   while (!robot_ha_llegado(mapa)) {
     Punto mejor_vecino;
