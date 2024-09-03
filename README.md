@@ -1,4 +1,8 @@
-# Trabajo Practico Estructructras de Datos y Algoritmos I
+# Trabajo Práctico Estructructras de Datos y Algoritmos I
+### **Universidad Nacional de Rosario (UNR)**
+
+**Carrera:** Licenciado en Ciencias de la Computación
+
 **Autor:** Ignacio Ortego
 
 [Ver consigna.](TPFinal.pdf)
@@ -129,3 +133,5 @@ La primer optimización que realice fue para el cálculo de los costos. Para est
 Luego para optimizar el uso de sensores, programé `path_planning` para que en caso de encontrarse con dos vecinos con el mismo costo, priorice aquellos ya conocidos. En caso de que el vecino con el menor costo sea desconocido, lanzo el sensor para verificar si me puedo mover al mismo.
 
 Para no recalcular la matriz de costos en cada uso del sensor, hice que el sensor devolviera `1` en caso de encontrarse con un muro y `0` en el caso contrario. De forma que si el sensor no detecta ningún obstáculo, no hay necesidad de calcular una nueva ruta.
+
+Finalmente, reemplace la cola de prioridad por una cola estándar. La razón es que, aunque la cola de prioridad sea más rapida en encontrar un camino, el mismo generalmente era diagonal, lo cual implica muchos más usos del sensor. Por ello, sacrifiqué calcular algunas celdas de más a cambio de reducir las llamadas al mismo.
