@@ -47,7 +47,7 @@ typedef _Robot* Robot;
 
 Esta tiene todo lo necesario para el funcionamiento del robot, incluyendo las coordenadas de su posición actual, el lugar donde debe llegar y valores adicionales para su algoritmo. 
 
-Ambas estructuras dependen de una estructura auxiliar llamada `Info`, la cual se encarga de leer el archivo de entrada e inicializar ambas estructuras antes mencionadas. De esta forma, luego de ser inicializadas, `Robot` y `Mapa` no se conectan directamente. De esta forma, el robot no tiene conocimiento de las dimensiones ni de la ubicación de los obstáculos en el mapa.
+Ambas estructuras dependen de una estructura auxiliar llamada `Info`, la cual se encarga de leer el archivo de entrada e inicializar ambas estructuras antes mencionadas. De esta forma, luego de ser inicializadas, `Robot` y `Mapa` no se conectan directamente. Así, el robot no tiene conocimiento de las dimensiones ni de la ubicación de los obstáculos en el mapa.
 
 ### Información recolectada
 
@@ -55,7 +55,7 @@ Durante su trayecto, es útil que el robot recuerde cosas para poder ser utiliza
 
 Para almacenar el camino recorrido y usarlo para hacer backtracking, el robot usa una `Pila` de direcciones ( `LEFT`, `RIGHT` ,`UP` ,`DOWN` ). Luego como cada movimiento está anclado a una dirección, la misma es apilada cada vez que el robot se mueve y es desapilada al hacer backtracking, leyendo la última dirección y moviéndose a la opuesta.
 
-Luego para recordar las casillas previamente visitadas, el robot utiliza una `TablaHash` de puntos (coordenadas enteras `x` e `y`). Cada vez que se mueve a una casilla nueva, la almacena en la Tabla. Luego, la Tabla es consultada cuando se busca moverse a casillas no visitadas anteriormente.
+Luego, para recordar las casillas previamente visitadas, el robot utiliza una `TablaHash` de puntos (coordenadas enteras `x` e `y`). Cada vez que se mueve a una casilla nueva, la almacena en la Tabla. Luego, la Tabla es consultada cuando se busca moverse a casillas no visitadas anteriormente.
 
 ### Algoritmo
 
